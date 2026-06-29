@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NoCo Changemakers 2026/27 — Applicant Evaluation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF8F3;
+    --paper-raised:#FFFFFF;
+    --ink:#23271F;
+    --ink-soft:#5B5E54;
+    --ink-faint:#8B8E83;
+    --sage:#3D6B4F;
+    --sage-deep:#2A4D38;
+    --sage-pale:#E7EFE6;
+    --clay:#A0613F;
+    --clay-pale:#F2E4D8;
+    --line:#DCD5C5;
+    --line-soft:#EAE5D8;
+    --amber:#B8852F;
+    --amber-pale:#FBF1DE;
+    --danger:#A0392F;
+    --danger-pale:#F7E8E5;
+    --shadow:0 1px 2px rgba(35,39,31,0.04), 0 4px 16px rgba(35,39,31,0.06);
+    --shadow-lg:0 8px 30px rgba(35,39,31,0.12);
+    --radius:10px;
+    --serif:'Lora', Georgia, serif;
+    --sans:'Inter', -apple-system, system-ui, sans-serif;
+    --mono:'JetBrains Mono', monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:15px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--sage-pale);}
+
+  a{color:var(--sage-deep);}
+
+  button{font-family:inherit;cursor:pointer;}
+  button:focus-visible, input:focus-visible, textarea:focus-visible, [tabindex]:focus-visible{
+    outline:2.5px solid var(--sage);
+    outline-offset:2px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+
+  /* ===== App shell ===== */
+  #app{display:flex; min-height:100vh;}
+
+  /* ===== Sidebar ===== */
+  #sidebar{
+    width:300px;
+    flex:none;
+    background:var(--paper-raised);
+    border-right:1px solid var(--line);
+    display:flex;
+    flex-direction:column;
+    height:100vh;
+    position:sticky;
+    top:0;
+  }
+  .sb-header{
+    padding:22px 20px 16px;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .sb-eyebrow{
+    font-size:11px;
+    letter-spacing:0.09em;
+    text-transform:uppercase;
+    color:var(--sage-deep);
+    font-weight:600;
+    margin:0 0 6px;
+  }
+  .sb-title{
+    font-family:var(--serif);
+    font-size:19px;
+    font-weight:600;
+    margin:0;
+    line-height:1.25;
+    color:var(--ink);
+  }
+  .sb-sub{
+    font-size:12.5px;
+    color:var(--ink-faint);
+    margin:6px 0 0;
+  }
+
+  .sb-evaluator{
+    padding:14px 20px;
+    border-bottom:1px solid var(--line-soft);
+    background:var(--sage-pale);
+  }
+  .sb-evaluator label{
+    display:block;
+    font-size:11px;
+    font-weight:600;
+    color:var(--sage-deep);
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    margin-bottom:3px;
+  }
+  .sb-evaluator input{
+    width:100%;
+    border:1px solid var(--line);
+    border-radius:6px;
+    background:var(--paper-raised);
+    padding:6px 9px;
+    font-size:13.5px;
+    font-family:inherit;
+    margin-bottom:7px;
+    color:var(--ink);
+  }
+  .sb-evaluator input:last-of-type{margin-bottom:0;}
+
+  .sb-progress-wrap{
+    padding:14px 20px 10px;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .sb-progress-label{
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .sb-progress-count{font-weight:700; color:var(--sage-deep); font-family:var(--mono);}
+  .sb-progress-track{
+    height:6px;
+    border-radius:4px;
+    background:var(--line-soft);
+    overflow:hidden;
+  }
+  .sb-progress-fill{
+    height:100%;
+    background:var(--sage);
+    border-radius:4px;
+    transition:width .35s ease;
+  }
+
+  .sb-list{
+    flex:1;
+    overflow-y:auto;
+    padding:8px 10px 14px;
+  }
+  .sb-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    width:100%;
+    text-align:left;
+    background:none;
+    border:none;
+    border-radius:8px;
+    padding:9px 10px;
+    margin-bottom:1px;
+    font-size:13.5px;
+    color:var(--ink);
+    transition:background .12s ease;
+  }
+  .sb-item:hover{background:var(--line-soft);}
+  .sb-item.active{background:var(--sage-pale);}
+  .sb-item.active .sb-item-name{color:var(--sage-deep); font-weight:700;}
+
+  .sb-dot{
+    flex:none;
+    width:9px; height:9px;
+    border-radius:50%;
+    border:1.5px solid var(--line);
+    background:var(--paper-raised);
+  }
+  .sb-dot.done{background:var(--sage); border-color:var(--sage);}
+  .sb-dot.partial{background:var(--amber); border-color:var(--amber);}
+
+  .sb-item-text{flex:1; min-width:0;}
+  .sb-item-name{
+    display:block;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .sb-item-role{
+    display:block;
+    font-size:11.5px;
+    color:var(--ink-faint);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  .sb-footer{
+    padding:12px 20px 18px;
+    border-top:1px solid var(--line-soft);
+  }
+  .sb-export-btn{
+    width:100%;
+    background:var(--sage-deep);
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    padding:10px 12px;
+    font-size:13.5px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+  }
+  .sb-export-btn:hover{background:var(--sage);}
+  .sb-reset-link{
+    display:block;
+    text-align:center;
+    margin-top:9px;
+    font-size:11.5px;
+    color:var(--ink-faint);
+    background:none;
+    border:none;
+    text-decoration:underline;
+  }
+
+  /* ===== Main ===== */
+  #main{flex:1; min-width:0; height:100vh; overflow-y:auto; scroll-behavior:smooth;}
+  .main-inner{
+    max-width:880px;
+    margin:0 auto;
+    padding:36px 40px 90px;
+  }
+
+  /* mobile top bar */
+  #mobile-bar{
+    display:none;
+    position:sticky; top:0; z-index:20;
+    background:var(--paper-raised);
+    border-bottom:1px solid var(--line);
+    padding:12px 16px;
+    align-items:center;
+    justify-content:space-between;
+  }
+  #mobile-bar .mb-title{font-family:var(--serif); font-weight:600; font-size:15px;}
+  #mobile-bar button{
+    background:var(--sage-pale); border:1px solid var(--line);
+    border-radius:7px; padding:7px 10px; font-size:13px; color:var(--sage-deep); font-weight:600;
+  }
+
+  /* ===== Applicant header card ===== */
+  .packet-card{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    margin-bottom:22px;
+    overflow:hidden;
+  }
+  .packet-head{
+    padding:24px 26px 20px;
+    border-bottom:1px solid var(--line-soft);
+    display:flex;
+    justify-content:space-between;
+    gap:18px;
+    flex-wrap:wrap;
+  }
+  .packet-name{
+    font-family:var(--serif);
+    font-size:27px;
+    font-weight:700;
+    margin:0 0 4px;
+    color:var(--ink);
+  }
+  .packet-role{
+    font-size:14.5px;
+    color:var(--ink-soft);
+    margin:0;
+  }
+  .packet-role b{color:var(--ink);}
+  .packet-meta{
+    font-size:12.5px;
+    color:var(--ink-faint);
+    text-align:right;
+    line-height:1.7;
+  }
+  .packet-meta a{color:var(--sage-deep); text-decoration:none; font-weight:600;}
+  .packet-meta a:hover{text-decoration:underline;}
+  .packet-num{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--sage-deep);
+    background:var(--sage-pale);
+    border-radius:5px;
+    padding:2px 7px;
+    font-weight:600;
+    letter-spacing:0.02em;
+  }
+
+  .packet-tag{
+    display:inline-block;
+    font-size:11px;
+    color:var(--clay);
+    background:var(--clay-pale);
+    border-radius:5px;
+    padding:3px 8px;
+    margin-top:8px;
+    font-weight:600;
+  }
+
+  .packet-body{padding:6px 26px 22px;}
+  .pfield{padding:16px 0; border-bottom:1px solid var(--line-soft);}
+  .pfield:last-child{border-bottom:none;}
+  .pfield-label{
+    font-size:11.5px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.07em;
+    color:var(--sage-deep);
+    margin:0 0 7px;
+    display:flex;
+    align-items:center;
+    gap:7px;
+  }
+  .pfield-label .ic{font-size:13px;}
+  .pfield-text{
+    margin:0;
+    color:var(--ink);
+    white-space:pre-wrap;
+    font-size:14.5px;
+    line-height:1.65;
+  }
+  .pfield-empty{color:var(--ink-faint); font-style:italic; font-size:13.5px;}
+
+  .collapsible-toggle{
+    background:none; border:none; color:var(--ink-faint); font-size:12px;
+    display:flex; align-items:center; gap:5px; margin-top:4px; padding:2px 0;
+  }
+  .collapsible-toggle:hover{color:var(--sage-deep);}
+
+  /* ===== Section divider ===== */
+  .section-divider{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin:38px 0 18px;
+  }
+  .section-divider .sd-label{
+    font-family:var(--serif);
+    font-size:20px;
+    font-weight:600;
+    color:var(--ink);
+    white-space:nowrap;
+  }
+  .section-divider .sd-line{flex:1; height:1px; background:var(--line);}
+  .section-hint{
+    font-size:13px;
+    color:var(--ink-faint);
+    margin:-10px 0 20px;
+  }
+
+  /* ===== Rubric ===== */
+  .rubric-card{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    margin-bottom:16px;
+    overflow:hidden;
+  }
+  .rubric-item{padding:20px 26px; border-bottom:1px solid var(--line-soft);}
+  .rubric-item:last-child{border-bottom:none;}
+  .rubric-item-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+    margin-bottom:6px;
+  }
+  .rubric-name{
+    font-size:15.5px;
+    font-weight:700;
+    color:var(--ink);
+    margin:0;
+  }
+  .rubric-weight-wrap{
+    flex:none;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .rubric-weight-bar{
+    width:46px;
+    height:6px;
+    border-radius:3px;
+    background:var(--line-soft);
+    overflow:hidden;
+  }
+  .rubric-weight-fill{height:100%; background:var(--clay); border-radius:3px;}
+  .rubric-weight-pct{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--ink-faint);
+    white-space:nowrap;
+  }
+  .rubric-question{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    margin:0 0 14px;
+    line-height:1.55;
+  }
+
+  .scale-row{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:8px;
+  }
+  .scale-opt{
+    position:relative;
+  }
+  .scale-opt input{
+    position:absolute;
+    opacity:0;
+    width:100%; height:100%;
+    margin:0;
+    cursor:pointer;
+  }
+  .scale-opt label{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:5px;
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    padding:9px 6px 10px;
+    cursor:pointer;
+    background:var(--paper);
+    transition:border-color .12s ease, background .12s ease;
+    height:100%;
+  }
+  .scale-opt .num{
+    font-family:var(--serif);
+    font-weight:700;
+    font-size:17px;
+    color:var(--ink-soft);
+  }
+  .scale-opt .desc{
+    font-size:10.8px;
+    line-height:1.35;
+    color:var(--ink-faint);
+    text-align:center;
+  }
+  .scale-opt label:hover{border-color:var(--sage);}
+  .scale-opt input:checked + label{
+    border-color:var(--sage);
+    background:var(--sage-pale);
+  }
+  .scale-opt input:checked + label .num{color:var(--sage-deep);}
+  .scale-opt input:checked + label .desc{color:var(--sage-deep);}
+
+  /* ===== Comments & final rec ===== */
+  .field-block{margin-bottom:18px;}
+  .field-block label.field-label{
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    color:var(--ink);
+    margin-bottom:7px;
+  }
+  .field-block .field-optional{
+    color:var(--ink-faint);
+    font-weight:400;
+    font-size:12px;
+  }
+  textarea{
+    width:100%;
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    padding:10px 12px;
+    font-family:inherit;
+    font-size:14px;
+    color:var(--ink);
+    background:var(--paper);
+    resize:vertical;
+    min-height:78px;
+  }
+  textarea:focus{border-color:var(--sage);}
+
+  .rec-row{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:9px;
+  }
+  .rec-opt input{position:absolute; opacity:0; width:100%; height:100%; cursor:pointer; margin:0;}
+  .rec-opt{position:relative;}
+  .rec-opt label{
+    display:flex; align-items:center; justify-content:center;
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    padding:11px 8px;
+    font-size:13px;
+    font-weight:600;
+    text-align:center;
+    cursor:pointer;
+    background:var(--paper);
+    color:var(--ink-soft);
+  }
+  .rec-opt label:hover{border-color:var(--sage);}
+  .rec-opt input:checked + label{border-color:var(--sage-deep); background:var(--sage-deep); color:#fff;}
+  .rec-opt[data-val="Do not admit"] input:checked + label{border-color:var(--danger); background:var(--danger);}
+  .rec-opt[data-val="Discuss"] input:checked + label{border-color:var(--amber); background:var(--amber);}
+  .rec-opt[data-val="Waitlist"] input:checked + label{border-color:#7A6A3F; background:#7A6A3F;}
+
+  /* ===== Footer nav ===== */
+  .nav-bar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:30px;
+    padding-top:20px;
+    border-top:1px solid var(--line);
+  }
+  .nav-btn{
+    display:flex; align-items:center; gap:8px;
+    background:var(--paper-raised);
+    border:1.5px solid var(--line);
+    border-radius:8px;
+    padding:10px 16px;
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .nav-btn:hover{border-color:var(--sage); color:var(--sage-deep);}
+  .nav-btn:disabled{opacity:0.35; cursor:default;}
+  .nav-btn:disabled:hover{border-color:var(--line); color:var(--ink);}
+  .nav-btn.primary{background:var(--sage-deep); border-color:var(--sage-deep); color:#fff;}
+  .nav-btn.primary:hover{background:var(--sage);}
+
+  .save-pill{
+    font-size:12px;
+    color:var(--ink-faint);
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .save-pill .dot{width:6px; height:6px; border-radius:50%; background:var(--sage); display:inline-block;}
+
+  /* ===== Welcome / summary screens ===== */
+  .hero-card{
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:38px 40px;
+  }
+  .hero-eyebrow{
+    font-size:12px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--sage-deep); font-weight:700; margin:0 0 10px;
+  }
+  .hero-title{
+    font-family:var(--serif);
+    font-size:32px;
+    font-weight:700;
+    margin:0 0 14px;
+    line-height:1.2;
+  }
+  .hero-text{font-size:15px; color:var(--ink-soft); max-width:600px; margin:0 0 10px;}
+  .hero-list{margin:18px 0 0; padding-left:0; list-style:none;}
+  .hero-list li{
+    display:flex; gap:10px; padding:9px 0; border-bottom:1px solid var(--line-soft);
+    font-size:13.5px; color:var(--ink-soft);
+  }
+  .hero-list li b{color:var(--ink); font-weight:600;}
+  .hero-list .hi-num{font-family:var(--mono); color:var(--clay); font-weight:700; flex:none; width:20px;}
+  .hero-cta{
+    margin-top:24px;
+    background:var(--sage-deep);
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    padding:13px 22px;
+    font-size:14.5px;
+    font-weight:700;
+  }
+  .hero-cta:hover{background:var(--sage);}
+
+  .summary-table-wrap{overflow-x:auto;}
+  table.summary{
+    width:100%;
+    border-collapse:collapse;
+    font-size:12.5px;
+    margin-top:10px;
+    table-layout:fixed;
+  }
+  table.summary th{
+    text-align:left;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:var(--ink-faint);
+    border-bottom:1.5px solid var(--line);
+    padding:8px 10px;
+  }
+  table.summary td{
+    padding:9px 10px;
+    border-bottom:1px solid var(--line-soft);
+    color:var(--ink-soft);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  table.summary th:nth-child(1), table.summary td:nth-child(1){width:19%;}
+  table.summary th:nth-child(2), table.summary td:nth-child(2){width:33%;}
+  table.summary th:nth-child(3), table.summary td:nth-child(3){width:14%; white-space:normal;}
+  table.summary th:nth-child(4), table.summary td:nth-child(4){width:17%; white-space:normal;}
+  table.summary th:nth-child(5), table.summary td:nth-child(5){width:17%; text-align:right; white-space:normal;}
+  table.summary td.name{color:var(--ink); font-weight:600;}
+  table.summary tr:hover td{background:var(--line-soft);}
+  .pill-rec{
+    display:inline-block; padding:2px 8px; border-radius:5px; font-size:11px; font-weight:700;
+  }
+  .pill-rec.admit{background:var(--sage-pale); color:var(--sage-deep);}
+  .pill-rec.waitlist{background:#F1ECDD; color:#7A6A3F;}
+  .pill-rec.discuss{background:var(--amber-pale); color:var(--amber);}
+  .pill-rec.notadmit{background:var(--danger-pale); color:var(--danger);}
+  .pill-rec.pending{background:var(--line-soft); color:var(--ink-faint);}
+
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--ink); color:#fff; padding:11px 20px; border-radius:8px;
+    font-size:13px; font-weight:600; box-shadow:var(--shadow-lg);
+    opacity:0; transition:opacity .25s ease, transform .25s ease;
+    pointer-events:none; z-index:100;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  .scroll-top-spacer{height:1px;}
+
+  /* ===== Mobile ===== */
+  @media (max-width:880px){
+    #sidebar{
+      position:fixed; left:0; top:0; height:100vh; z-index:30;
+      transform:translateX(-100%);
+      transition:transform .25s ease;
+      width:88%;
+      max-width:320px;
+      box-shadow:var(--shadow-lg);
+    }
+    #sidebar.open{transform:translateX(0);}
+    #scrim{
+      display:none; position:fixed; inset:0; background:rgba(0,0,0,0.35); z-index:25;
+    }
+    #scrim.show{display:block;}
+    #mobile-bar{display:flex;}
+    .main-inner{padding:20px 16px 70px;}
+    .packet-head{flex-direction:column;}
+    .packet-meta{text-align:left;}
+    .scale-row{grid-template-columns:repeat(5,1fr); gap:5px;}
+    .scale-opt .desc{display:none;}
+    .rec-row{grid-template-columns:repeat(2,1fr);}
+    .packet-name{font-size:23px;}
+    .hero-card{padding:26px 20px;}
+    .hero-title{font-size:26px;}
+  }
+</style>
+</head>
+<body>
+
+<div id="scrim" onclick="closeSidebar()"></div>
+
+<div id="app">
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sb-header">
+      <p class="sb-eyebrow">NoCo Changemakers · 2026/27</p>
+      <h1 class="sb-title">Applicant Evaluation</h1>
+      <p class="sb-sub">21 applicants · rubric-based reviewer scoring</p>
+    </div>
+
+    <div class="sb-evaluator">
+      <label for="ev-name">Your name</label>
+      <input type="text" id="ev-name" placeholder="Evaluator name">
+      <label for="ev-email">Your email</label>
+      <input type="text" id="ev-email" placeholder="you@organization.org">
+    </div>
+
+    <div class="sb-progress-wrap">
+      <div class="sb-progress-label">
+        <span>Reviewed</span>
+        <span><span class="sb-progress-count" id="progress-count">0</span> / 21</span>
+      </div>
+      <div class="sb-progress-track"><div class="sb-progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+
+    <nav class="sb-list" id="sb-list"></nav>
+
+    <div class="sb-footer">
+      <button class="sb-export-btn" onclick="exportCSV()">⬇ Export scores (CSV)</button>
+      <button class="sb-reset-link" onclick="confirmReset()">Clear all my responses</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main id="main">
+    <div id="mobile-bar">
+      <button onclick="openSidebar()">☰ Applicants</button>
+      <span class="mb-title" id="mb-title">Welcome</span>
+      <span style="width:70px;"></span>
+    </div>
+    <div class="main-inner" id="main-inner"></div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script id="data-json" type="application/json">
+{"applicants": [{"name": "Anique Mautner", "positionTitle": "Marketing & Strategy Director", "employer": "MiresBall Brand Design", "email": "anique.mautner@gmail.com", "phone": "(858) 952-6354", "howHeard": "Referral from NoCo Foundation board or staff", "resumeLink": "https://www.jotform.com/uploads/communityfoundationnc/261256126770153/6583796963524606164/AMautner-Resume.pdf", "challenge": "As a newer resident to Fort Collins, I've spent time listening to local community leaders in the private and public sectors and found that, like many growing communities, Northern Colorado is navigating housing affordability, childcare access, and increasing pressure on nonprofits asked to do more with fewer resources. Rapid growth places a strain on community connection and belonging, something I've experienced personally. \n\nPhilanthropy has an important role to play both as a source of funding and a connector that aligns stakeholders, surfaces shared priorities, and supports collaborative, long-term solutions that individual organizations cannot achieve alone.\n\nI bring experience helping mission-driven organizations address these kinds of complex challenges through strategy, storytelling, and partnership: OneSD brought cross-sector partners together to address social division; and SunCoast Co-op Market residents organized to bring healthy food to an underserved area. I'm excited to contribute those skills here \u2014 and believe NoCo Changemakers is the ideal opportunity to expand my personal impact in my new hometown.", "leadership": "As Marketing & Strategy Director at MiresBall, I collaborated on the strategic rebrand of San Diego Foundation and later guided its 50th Anniversary campaign, helping communicate the foundation's long-term vision and build trust in the community. The work contributed to a 30% increase in positive brand perception during the first year and supported the foundation's ambitious campaign toward its $1 billion fundraising goal.", "collaboration": "In my work with a community foundation leadership team, I helped facilitate conversations among executives, board members, and creative partners through a complex rebranding process. My role was to create space for every voice while keeping the group focused on shared goals. The experience built trust among stakeholders and creatives, allowing us to move through the process together towards a new brand that everyone could support.\n\nExtending this further, I\u2019ve seen firsthand how critical collaboration is in effective philanthropy, especially bringing people together with different priorities and perspectives. Community foundations are uniquely positioned to build trust, align donors around shared priorities, and strengthen partnerships across sectors. I\u2019m especially interested in how collaborative philanthropy can create lasting systems-level change instead of isolated, short-term solutions.", "hopeToGain": "Having moved to Northern Colorado, I'm looking for meaningful ways to invest my time and skills in the community I now call home. I hope to build relationships with people who are deeply engaged in local challenges, learn how philanthropy works at the regional level, and better understand where my experience in strategy, storytelling, and nonprofit partnerships can be most useful. I also hope to become a long-term contributor to Northern Colorado's civic and philanthropic community.", "optionalDetail": "Throughout my career, I've helped mission-driven organizations articulate who they are, why they matter, and how to show up with clarity and humanity. Professionally, I bring experience in strategy, communications, facilitation, and consensus-building. Personally, I'm looking for a place to contribute over the long term.", "references": "John Ball: john@miresball.com / (619) 994-6632; Christa Martin: cmartin@chiefoutsiders.com / (858) 775-2652"}, {"name": "Anselma Lopez", "positionTitle": "Fundraising & Event Supervisor", "employer": "Town of Windsor", "email": "anselma.lopez@gmail.com", "phone": "(719) 469-6711", "howHeard": "Referral from Changemaker alumni  -  Referral from NoCo Foundation board or staff", "resumeLink": "https://www.jotform.com/uploads/communityfoundationnc/261256126770153/6583073273615441522/Anselma Lopez Resume.pdf", "challenge": "Northern Colorado offers strong programs for youth and families, yet adults in their 30s\u201340s\u2014especially those without children\u2014often lack meaningful pathways to connect and engage. This gap limits social cohesion and reduces opportunities for civic participation among a large demographic that wants to contribute but doesn\u2019t always know where to plug in. Seed funding, capacity building, and pilot projects targeting this audience can help communities in Northern Colorado test new engagement strategies, strengthen social ties, and create spaces where more residents feel connected and invested. Philanthropy can play a catalytic role by supporting innovative models that broaden who feels welcome, included, and empowered in our region.", "leadership": "When I moved to Northern Colorado, I took the initiative to establish a regional CU Alumni group to foster connection among new and longtime residents. I developed outreach materials, recruited a core membership base, and organized events that brought together up to 50 alumni at a time. One of my proudest accomplishments was launching a local scholarship program for area students attending CU Boulder. I led fundraising efforts, coordinated donations, and helped select recipients whose values aligned with our mission. I built the group with sustainability in mind and ensured strong succession planning so the organization remained active after my leadership term ended. This experience taught me how intentional program design can create lasting community impact.", "collaboration": "As part of the Board of Advisors for Mile High Young Professionals, I supported our philanthropy committee in integrating meaningful community impact throughout the organization. I helped identify nonprofits aligned with our mission, coordinated logistics, and worked closely with our marketing team to promote participation. Each year, we partnered with more than a dozen nonprofits\u2014hosting them at monthly socials, organizing volunteer shifts at food shelters and Habitat for Humanity, and coordinating our winter boot drive for elementary students. We routinely maxed out volunteer slots, strengthening our relationships and demonstrating our group\u2019s reliability. This experience taught me the value of shared purpose, consistent communication, and creating accessible opportunities for people to give back.", "hopeToGain": "I hope to deepen my skills in community engagement, donor fundraising, and philanthropic strategy. As I grow in my role, I will be leading Windsor\u2019s Reimagine initiative, a philanthropic endeavor centered on strengthening belonging and resident connection. I want to learn from peers and leaders across Northern Colorado who are navigating similar opportunities and challenges. Through the program, I hope to expand my network, gain practical tools, and strengthen my ability to design programs that reflect community voice. Becoming a NoCo Changemaker will help me bring fresh ideas and renewed energy back to Windsor.", "optionalDetail": "I am passionate about building inclusive communities and have experience turning ideas into sustainable programs. My background includes event planning, volunteer coordination, and strengthening regional partnerships. I bring a perspective informed by working with diverse resident groups and designing engagement opportunities for demographics often overlooked in traditional programming. I would value the opportunity to learn, collaborate, and contribute alongside other emerging leaders through the NoCo Changemakers program.", "references": "Brittany Pearce, 731-661-1050, brittany.e.pearce@gmail.com (Board experience). Laura Browarny, 970-674-3521, lbrowarny@windsorgov.com"}, {"name": "Bethany Geisert", "positionTitle": "Director of Operations", "employer": "Waypoint Real Estate", "email": "bgeisert@waypointre.com", "phone": "(970) 420-2166", "howHeard": "First from Lyndsey Hertz and James Hamilton during a meeting, and again from Hilary McCart, Steering Committee for the program", "resumeLink": "https://www.jotform.com/uploads/communityfoundationnc/261256126770153/6583251912029710269/Bethany_Geisert_Resume_2026.pdf", "challenge": "Childcare access and housing affordability are connected challenges for working families in Northern Colorado. When housing costs consume a large portion of a household budget, most families need two incomes to stay here. That leaves parents with young children stuck between daycare costs they can't afford and a single income that doesn't stretch far enough. That assumes that parents can find suitable childcare at all. The ripple effects of these challenges go beyond individual families. In addition to these pressures negatively impacting mental health and quality of life across the community, there are risks to our local business economy, and when parents of young children can't make it work here, they leave. That's a direct loss for local employers competing for working-age talent. I think there is an opportunity for philanthropy to play a role in advocacy around this challenge, and in connecting employers, public funding, childcare providers, and community leaders in an effort for shared solutions.", "leadership": "I am fortunate to work for an organization that supports giving back to our community, and am able to regularly volunteer for my children's elementary, reading to K-4th graders. In addition, I volunteer in my church's meals ministry outreach, where we come together to care for others through meal preparation and delivery. Lastly, for several years, I have been a youth volunteer coach for baseball and basketball teams. With youth coaching, it is a privilege to introduce young children to the character development, teamwork, respect, and confidence that participation in sports can provide. I believe their first introduction to team sports can pave the way for the way they navigate the world, challenges, and social interactions. I like to believe that my positive and encouraging coaching approach helps young children gain confidence and want to come back for more.", "collaboration": "Through my organization, Waypoint Real Estate, we host a 0.5K Run for RamStrength, a 1/2 kilometer \"race\" benefitting RamStrength. We have put this event on for 5 years, and it continues to grow in impact and reach each year. From the inaugural year and for every year since, we collaborate RamStrength, the venue (CSU), and with our local business community in securing sponsorships and attendees. In addition, we have an event committee that helps coordinate volunteers, funds raised, press, photographers, and more. While in the early years of the event, our committee was small, and I led most of the efforts, we've been able to grow it over the years where each role can play to their strength. What I've learned is that delegation and specialization is a beautiful thing when you let people opt in to play to their strengths and then let them get creative with their solutions. My role as it stands this year is largely strategic in nature, specializing in connecting with local businesses for sponsorship requests.", "hopeToGain": "I am eager to learn about how the work in our community actually gets done. I have a genuine interest in the challenges that face our community, but I don't yet have a deep understanding of how philanthropic dollars move through our community, and how decisions get made. I would love to meet people who are also thinking seriously about Northern Colorado's future. Lastly, there are so many wonderful non-profits doing great work in our community, and I think there is a real opportunity for matchmaking skillsets and passions to nonprofits' needs, but nonprofits often don't have the bandwidth or voice to be discovered, because they're busy doing the great work! I think it's our responsibility as a community to highlight the work they do and shine light on it for people that want to give back and help and don't know where to start.", "optionalDetail": "A few years ago, I went through Leadership Fort Collins (Hi Mary!), and really enjoyed learning about our community. I look forward most to learning and connecting with others in a program like this. Lastly, I heard about this program first when meeting with Lyndsey Hertz and James Hamilton a few months ago, and then again from Hilary McCart today, who I understand was on the Steering Committee for this program. I appreciate your consideration.", "references": "Josh Guernsey, Waypoint Real Estate, jguernsey@waypointre.com, 970-218-2331; Jerick Flores, Waypoint Real Estate, jflores@waypointre.com, (303) 260-9504"}, {"name": "Carrie Rossman", "positionTitle": "Conservation Leadership Scholar & Seminarian", "employer": "National Caucus of Environmental Legislators; CSU; & Garrett Evangelical Theological Seminary", "email": "ctycolorado@hotmail.com", "phone": "(970) 888-1071", "howHeard": "LinkedIn", "resumeLink": "https://www.jotform.com/uploads/communityfoundationnc/261256126770153/6571048614526350013/Rossman_C_Resume.pdf", "challenge": "I grew up in Northern Colorado and see the most critical challenges for our Northern Colorado community as 1) water, how we conserve and equitably utilize this diminishing resource in the context of the prior appropriation doctrine; 2) affordability, most critically for basic services like food, housing and childcare; 3) education from preschool through higher education; and 4) natural space appreciation and protection. I believe that by addressing these challenges, we can collectively live into our vibrant and unique Northern Colorado lifestyle. \n\nPhilanthropy can and does invest resources to combat the above listed challenges, and it can also play a convening role to bring together different voices in order to collaboratively address challenges. An example of this is the way so many organizations came together over the years to make the recently completed Poudre River Regional Trail Initiative, all 45-miles of it, a reality.", "leadership": "During my time with BBB Serving Northern Colorado and Wyoming, I spearheaded a partnership with United Way of Larimer County, and later United Way of Weld County, to ensure all United Way funded nonprofits in the community met the BBB\u2019s charity accountability standards in the areas of governance and oversight; effectiveness measurement; finances; and fundraising and information materials. This partnership strengthened the nonprofit community in Northern Colorado as my team and I provided education, and evaluation, on best practices in charitable accountability. The partnership was recognized with an Outstanding BBB award from the Council of Better Business Bureaus.", "collaboration": "In 2022, YMCA of the Rockies\u2019 CEO and I were approached by a donor who wanted to start an endowment to fund the YMCA\u2019s childcare program, serving local children year-round, ages 1-5, and YMCA guests in the summer. Estes Park is a childcare desert, so we jumped at the offer. Together with the donor and our staff we renewed, strengthened and expanded the childcare program.\n\nI led the stewardship efforts for the endowment donor family, to report on the use of funds and to showcase the positive impact of the endowment. With additional donors, the State of Colorado and Town of Estes Park I led the efforts to find more resources for capital improvements, staff training, and special needs services for the childcare program and day camp. The vision of one donor joined with the hearts and hands of many ensures Estes Park will have childcare services for generations to come.", "hopeToGain": "As Chief Advancement Officer for YMCA of the Rockies, and in other roles prior I embraced the opportunity to build relationships and invite individuals, families, foundations and corporations to make philanthropic investments. Matching a giving passion to a nonprofit need is stars aligning and it feels a little like magic.\n\nNow, the tables have turned, and I get to be a philanthropist. My husband and I have started our own small, donor advised fund (DAF); and my extended family and I have established a memorial DAF to honor the life and character of my late father, Rex King.\n\nAs a NoCo ChangeMaker I seek to learn best practices in philanthropy, to embrace community convening and to share, with my fellow ChangeMakers, the fundraiser perspective. Moreover, as a Northern Colorado resident, I seek to be a force for good in our community.", "optionalDetail": "I believe in lifelong service and learning. I am a program graduate of Water Literate Leaders, 2023, hosted by the Community Foundation and the Colorado Water Center. At present, I am a master of conservation leadership candidate at CSU, graduating in December; and I will commence seminary studies online this fall. \n\nI also currently serve on the City of Loveland Sustainability and Climate Task Force and as a giving and grants advisor to my church, First Congregational United Church of Christ in Greeley, CO. \n\nBecoming a NoCo ChangeMaker will complement my current studies and volunteer service and build upon my career with nonprofits that seek to make the world better through their missions. Thank you for your consideration.", "references": "Pam King, President/CEO (retired), BBB Serving Northern Colorado and Wyoming, pamking6320@gmail.com, 970.290.7091; Lauren Watel, President, Schlessman Family Foundation, lauren.watel@gmail.com, 303.947.1697"}, {"name": "Hilary McCart", "positionTitle": "SVP, Benefits Consultant", "employer": "Gallagher", "email": "Hilary_McCart@ajg.com", "phone": "(970) 568-2110", "howHeard": "Referral from NoCo Foundation board or staff", "resumeLink": "https://www.jotform.com/uploads/communityfoundationnc/261256126770153/6582555573227000063/Hilary McCart Resume.pdf", "challenge": "In Northern Colorado, it can be difficult for individuals and families to meaningfully engage in giving back to their community. There are many wonderful nonprofits doing important work, but getting involved often requires people to search, evaluate, and navigate multiple organizations on their own. \n\nIn my experience, most people genuinely want to give back, especially families, but aren\u2019t sure where to start or how to stay consistently involved. \n\nPhilanthropy has an opportunity to help simplify that experience by creating more visible and accessible pathways for engagement. This could include more centralized, user-friendly ways to connect people with opportunities that align with their specific interests and values. \n\nBy making it easier for individuals and families to participate, philanthropy can help build a stronger culture of connection, generosity, and long-term community impact.", "leadership": "Earlier in my career, I served as a board member for CASA of Larimer County, where I had the opportunity to take on several initiatives to support the organization\u2019s growth. I helped lead the development of a company matching program to encourage broader participation in giving and to amplify the impact of individual contributions. I also worked with the board to evaluate alternative spaces as the organization outgrew its existing footprint.\n\nBoth efforts were rooted in creating greater capacity, financially and operationally, to support CASA\u2019s mission of advocating for children in our community. By expanding funding opportunities and helping position the organization for growth, these initiatives contributed to CASA\u2019s ability to serve more children and families effectively.\n\nMore recently, my leadership has shifted closer to home through coaching youth sports and staying actively involved in my community.", "collaboration": "One example of meaningful collaboration has been my experience as a Vistage member, where a group of leaders come together regularly to support one another\u2019s growth and decision-making. In this setting, my role has been both a contributor and a peer advisor, bringing real-time business challenges, while also helping others think through theirs.\n\nWhat made this experience impactful was the level of trust and accountability within the group. By asking thoughtful questions, offering perspective, and at times challenging assumptions, I was able to contribute to better outcomes for others while also gaining valuable insight myself.\n\nI learned that effective collaboration is not about having the right answers, but about creating space for better thinking. That same approach, shared ownership and mutual investment, translates directly to effective philanthropy.", "hopeToGain": "I hope to gain a stronger connection to the Northern Colorado community and a deeper understanding of where I can make a meaningful impact. While I\u2019ve been involved in different ways over time, I\u2019m at a stage where I\u2019m looking to be more intentional about how I engage and give back.\n\nI\u2019m particularly interested in learning from others who are equally committed to making a difference, and in better understanding the needs and opportunities across our region. I value environments like this that challenge thinking, offer diverse perspectives, and create space for both reflection and action.\n\nI also hope to contribute my own perspective, particularly around building connections and simplifying ways for people to engage. Ultimately, I\u2019m looking to grow alongside a group of peers while becoming more thoughtful and effective in how I support my community.", "optionalDetail": "Thanks for the opportunity!", "references": "Nancy Girres, Nancy Girres, nancy@nancygirres.com, 970.566.2001; Tom Harper, tom.harper@assuredpartners.com, 706-338-1437"}, {"name": "Jessica Quintana", "positionTitle": "Community & Member Relations", "employer": "Poudre Valley Rural Electric Association", "email": "jquintana@pvrea.coop", "phone": "(719) 239-0704", "howHeard": "Referral from Changemaker alumni  -  Chamber of Commerce communication  -  Referral from NoCo Foundation board or staff", "resumeLink": "https://www.jotform.com/uploads/communityfoundationnc/261256126770153/6583186518999459382/Quintana_Resume_COMMUNITY AND MEMBER ENGAGEMENT.pdf", "challenge": "Housing. The cost of living keeps rising, wages don't follow the same trend. Stable house changes everything for a family. It supports stronger families, healthier communities and long-term economic stability. Philanthropy can play a role by assisting those in need financially that puts them one step closer to that stability.", "leadership": "A meaningful example is my work building and leading PVREA's Ambassador Program. I recognized an opportunity to better engage employees in the community while fostering a culture of service and professional development. This program is now three years old, there have been over 45 participants, we have expanded engagement in our communities, and created opportunities for employees to grow personally and professionally.", "collaboration": "After the Cameron Peak Fire and Black Hollow flood, I led PVREA's Innovation Team in a partnership and tree planting days with Coalition for the Poudre River Watershed (CPRW). This restoration work was a community-wide effort and I learned about CPRW in general as I was unfamiliar prior to this project. I learned about the process of recruiting volunteers outside of our normal scope. I learned that this cross-organization collaboration was reliant on community participation and partnerships from our whole region.", "hopeToGain": "I hope to gain knowledge about the different organizations I don't know about along with the process of grantmaking. I'd like to understand on a deeper level how nonprofits work with each other and what types of outlooks are down the pipeline.", "optionalDetail": "In my role at PVREA, I\u2019ve had the opportunity to lead and support initiatives that bring together nonprofits, schools, and local partners to create meaningful, lasting impact whether through scholarship programs, community partnerships, or volunteer engagement.", "references": "Amy Rosier - arosier@pvrea.coop, 7206268297"}, {"name": "Kaitlin Bjork", "positionTitle": "Development Director", "employer": "Respite Care, Inc.", "email": "Kaitlin@respitecareinc.org", "phone": "(970) 402-4322", "howHeard": "Chamber of Commerce communication", "resumeLink": "https://www.jotform.com/uploads/communityfoundationnc/261256126770153/6565066885514001351/Kaitlin Bjork_Resume_NoCo Changemakers.pdf", "challenge": "One challenge I see in Northern Colorado is that growth has not been felt evenly across our communities. We are in a region that is growing quickly, with new jobs, development, and opportunity, but not everyone is benefiting in the same way. For many people, especially those in lower-income households and some rural areas, things like affordable housing, childcare, and access to training or stable employment are still real barriers to getting ahead.\n\nWhat stands out to me is that these are not isolated issues. They are connected. If someone is struggling with housing or childcare, it affects their ability to stay in a job or pursue education, which then affects long-term stability.\n\nI think philanthropy has a unique role here because it can move more quickly and take more risks than other sectors. It can support innovative ideas, help local organizations that are already trusted in the community, and bring different partners together to work toward shared goals instead of working independently. Just as importantly, it can help make sure the people most affected by these challenges have a voice in shaping the solutions.\n\nFor me, the opportunity in Northern Colorado is making sure growth feels more inclusive so that more people are not just living here, but actually able to build stable, thriving lives here.", "leadership": "In my community, I helped lead our most recent capital campaign to build a new Respite Care facility. We raised $12.3 million toward a $12 million goal, which allowed us to fully fund a much-needed space for individuals and families in our community.\n\nMy role included donor cultivation and stewardship, making direct asks for gifts, and organizing key campaign events that helped keep momentum and engagement throughout the process. I helped coordinate a Kick-off Event, Groundbreaking, multiple donor appreciation events, and the Ribbon Cutting. I also stayed involved in ongoing donor communication and relationship-building throughout the campaign, not just around events.\n\nA big part of the experience for me was learning how personal fundraising actually is. The asks were not just about dollars, they were about clearly connecting people to the impact they could have. The events and follow-up helped reinforce those relationships and keep people connected to the work over time.\n\nThis experience reinforced for me that leadership is really about consistency, relationships, and helping people stay connected to a shared goal that makes a real difference in the community.", "collaboration": "A good example of collaboration for me was helping launch our Legacy Circle program. This was a new initiative, so a lot of the early work involved learning from and working with others to build it in a thoughtful way.\n\nI met with planned giving professionals to better understand best practices and what makes legacy programs successful. I also connected with other nonprofits that already had similar programs to learn from their experience and get practical feedback on what worked and what did not. In addition, I attended planned giving trainings to build my own understanding of the space.\n\nInternally, I worked closely with both staff and our Board to shape the structure of the program and make sure it reflected our organization\u2019s goals and values. I also collaborated with staff on the marketing and messaging so the program would be clear and accessible to donors.\n\nWhat I learned from this experience is that collaboration is not just about working together internally, but also about being willing to learn from others outside your organization. Building something new takes a mix of listening, adapting, and making sure different perspectives are reflected in the final outcome.", "hopeToGain": "As a NoCo Changemaker, I hope to gain a broader perspective on the challenges and opportunities facing Northern Colorado, especially from people working in different sectors and communities than my own. I am a third-generation Fort Collins native, so this region is not just where I work, it is home. Because of that, I care deeply about how it continues to grow and change.\n\nMy most recent experience has been in nonprofit development and fundraising, so I am interested in learning how other leaders approach issues like affordable housing, workforce development, and community health from different angles.\n\nI also hope to grow as a more thoughtful and effective leader by learning from the experiences of others in the group. I value the opportunity to step outside of my day-to-day work and reflect more intentionally on how collaboration can create stronger and more sustainable solutions.\n\nI would also hope to share my own experience in fundraising, donor engagement, and building community support. I have seen how important relationships are in turning ideas into action, and I would like to bring that perspective into conversations with others in the program.\n\nOverall, I see this as an opportunity to both learn and contribute, while becoming a more connected and effective leader in Northern Colorado.", "optionalDetail": "My connection to Northern Colorado is both personal and professional. I am a third-generation Fort Collins native, currently working and residing in Timnath, and I care deeply about how this region grows and changes over time. In my work in nonprofit development, I have seen how relationships and collaboration turn community ideas into real impact. I am interested in NoCo Changemakers because I want to learn from others working across different sectors while also sharing my experience in building support for community priorities.", "references": "Kristi Briles, Kristi@respitecareinc.org, (970) 207-9435"}, {"name": "Karen Jackson", "positionTitle": "Outreach Director", "employer": "Estes Nonprofit Network", "email": "pinesapstudio@gmail.com", "phone": "(303) 902-4695", "howHeard": "Referral from NoCo Foundation board or staff", "resumeLink": "https://www.jotform.com/uploads/communityfoundationnc/261256126770153/6583284140117693291/KarenMJackson_Resume_Comms.pdf", "challenge": "Northern Colorado is not unique in the diversity of social causes and desperate needs. It's hard to choose one specific issue. However, I do see workforce development and upskilling as a unifying need that, if successfully addressed, helps resolve income/employment issues. Employers are the largest providers of health coverage, so increased employment helps reduce the state's Medicaid allocation. It potentially increases wages, which increases people's chances of affording housing in NOCO. \nPhilanthropy steps in where our government or corporate systems cannot (or will not). In this case, there is support from the government and corporations for workforce development. I see philanthropy as an instigator and connector for this issue, and possibly the best place to tell success stories.", "leadership": "When I moved to Estes Park, I developed and produced an Arts Studio Tour for five years. Amazing talent could easily be promoted to foster connections between locals and tourists alike. The studio tour leveraged the well-known fact that people want to feel an authentic connection to the community. This event invites them to drive down a dirt road and get into locals' home studios. Tourists covet their experience in Estes. Encouraging them to buy local art satisfies their desire to take a piece of Estes home and creates an income stream for local artists. This initiative became a program that uses a nonprofit as a fiscal sponsor and partners with destination marketing. The event is now in its 10th year.", "collaboration": "The Estes Nonprofit Network is sunsetting. My role is to create all SOPs and train the Estes Chamber of Commerce on the core programs they will absorb. I am in a delicate position that tethers together the interests of our board and honors our donors' private information while being transparent and gracious with the Chamber staff about the good, the bad and the ugly in executing programs. I am advocating that our audience support the Chamber while celebrating our team's deep dedication to building a stellar organization. Keeping multiple parties on track happens by focusing on the north star (setting nonprofits up for success), good governance, and legal documents. Personality and connection are also playing a key role in holding this process together.", "hopeToGain": "I would like to clarify how I can make the greatest impact. While asking for donations and \"making the case for support\" is a familiar chair to sit in, I am a skeptic donor: tight with my money, more inclined to leave a planned gift, and wary of how my money will be spent. I believe in trust-based philanthropy, but I am not sure the larger organizations I would like to support will actually feel my small change. And for the missions I am excited about, I am volunteering my time and talent\u2014but this dedication conflicts with the need to make money to give! What is the best allocation of my resources?", "optionalDetail": "As I look at new positions that may lean more towards marketing and communications, I may lose philanthropy as part of my day job. I see Changemakers as a way to develop a network of philanthropy friends and stay close to giving. It's also time for me to craft a giving plan that feels less sporadic and reactive. I would like to continue to be an advocate of giving back and be a model for peers.", "references": "Claire Bouchard and Jodie Riesenberger"}, {"name": "Kari Lynch", "positionTitle": "Supervisor, communications, community relations, public education", "employer": "Platte River Power Authority", "email": "lynchk@prpa.org", "phone": "(970) 690-6478", "howHeard": "Coworker Leigh Gibson is a member of Leadership Northern Colorado and learned about NoCo Changemakers, she recommended to me based on my role.", "resumeLink": "https://www.jotform.com/uploads/communityfoundationnc/261256126770153/6582220315219174141/Kari Lynch Resume 2026.pdf", "challenge": "A challenge facing Northern Colorado communities is balancing affordability and the transition to a noncarbon energy future. At Platte River Power Authority, we see this not just as a challenge but as an opportunity to lead thoughtfully. Strong connections with the nonprofit community are essential for Platte River because they provide trusted, on-the-ground insight into community needs, help extend the reach of programs and ensure that energy initiatives are designed and delivered in ways that are equitable, accessible, and responsive to those most impacted by affordability challenges. The goal is not simply to transition to cleaner energy, but to do so in a way that is equitable and reflective of community needs.", "leadership": "In my role at Platte River, I demonstrated leadership by spearheading a workforce development initiative in partnership with local schools. I coordinate opportunities for students to learn about careers in the energy industry by organizing presentations, connecting them with a diverse group of employees, and showcasing pathways into trade and STEM careers.\n\nThis effort contributed to positive change by increasing awareness of accessible, local career opportunities. It also created meaningful engagement for our employees, who have found a great deal of value in supporting and inspiring the next generation. That enthusiasm has helped expand the program into additional opportunities, such as job shadowing, further strengthening connections between students and real-world career pathways in our region.", "collaboration": "I successfully collaborated with others through my leadership of Platte River\u2019s United Way of Larimer County fundraising campaign. I led a committee of employees representing different departments, coordinating planning, communications and engagement activities to build momentum across the organization.\n\nMy role was to set the vision, communicate with leadership, organize the team\u2019s efforts and ensure everyone had clear opportunities to contribute. By fostering a collaborative, inclusive approach, we created a strong sense of shared ownership, which helped us achieve an award-winning campaign and raise over $100,000.", "hopeToGain": "As a NoCo Changemaker, I hope to build meaningful connections across the region and deepen my understanding of the challenges and priorities facing our local nonprofit and partner community. By learning directly from those doing this work, I can be a stronger, more informed voice for their needs and perspectives. I also hope to apply those insights to evolve and grow Platte River\u2019s community support programs in ways that better support these organizations and ensure our efforts are impactful and aligned with the communities we serve.", "optionalDetail": "I believe I bring a unique perspective to this group through my role at Platte River Power Authority. As a public power entity, we operate with a strong sense of responsibility to serve our communities and prioritize what\u2019s best for the public good. That lens shapes how I approach partnerships, philanthropy, and community engagement.\n\nI\u2019m especially interested in NoCo Changemakers as an opportunity to connect that perspective with the work of local nonprofits\u2014learning from them while also making sure community needs are reflected in the programs and initiatives I help support.", "references": "Ellie Benjamin: ebenjamin@uwaylc.org, 970-407-7035 (VP of development at United Way of Larimer County) Kendal Perez: perezk@prpa.org, (970) 229.5304 (senior manager, communications, community relations and public education at Platte River Power Authority)"}, {"name": "Kimberly O'Neil", "positionTitle": "Director", "employer": "Max West Inc.", "email": "kim@maxwestinc.com", "phone": "(970) 214-3113", "howHeard": "Referral from Changemaker alumni  -  Chamber of Commerce communication", "resumeLink": "https://www.jotform.com/uploads/communityfoundationnc/261256126770153/6583179908453882936/Kimberly_O_Neil_Resume.pdf", "challenge": "One challenge I have observed and been involved in is providing access to youth sports.  In Northern Colorado there is a shortage of both public and private court and field space available which drives up rental prices and causes competition and increased fees for kids to participate.  This ends up making youth sports and camps an elite activity which it should ideally be accessible to all kids for fun, for healthy bodies, and for all the benefits that team sports can bring.  What we are seeing in other cities is more government groups, non-profit organizations, sponsors and donors working together to provide support, subsidies and scholarships to make youth sports affordable and accessible.", "leadership": "I spent 15 years at Encompass Technologies as an HR and Operations leader.  We experienced tremendous growth during that period and I am very proud of building a strong employer in the Northern Colorado community.  One of the initiatives we created after building up a team in China was to host annual summer camps in Fort Collins for the children of our US and China employees.  The kids had the opportunity to experience each others' cultures, gain exposure to new languages and food and activities.  The kids that were involved have created and maintained lifelong friendships and gained a deeper understanding of the world around us.", "collaboration": "Accomplishing almost anything in business and community and philanthropy requires collaboration and team work.  One of the biggest projects I've worked on was the design and hosting of the annual Encompass user group meeting.  This started as a small 30 person conference into a event hosting over 300 people.  This took internal collaboration within the company across all teams to create schedules, agendas, content and marketing as well as coordination with vendors, venues, guest speakers, attendees, and city officials.  I learned to be flexible, stay calm, and to use the team of experts we had gathered.  Each year was better than the last and it was a wonderful way to showcase Fort Collins to our customers from all over the US.", "hopeToGain": "I am in a new phase in my life as a business investor and advisor rather than a full-time executive.  Philanthropy is not an area I've had extensive exposure to in the past, so I am excited to learn more about the ins and outs of becoming an effective philanthropist.  I am also looking forward to learning more about what others are already doing in the community and what opportunities exist to work together and magnify our impact. The previous cohorts are made of amazing community members so I am also eager to meet new people and make real connections in the community.", "optionalDetail": "I have lived in Colorado my whole life and Northern Colorado for 27 years.  I am committed to making Northern Colorado a great place for real people, for families and for businesses.  Max West Inc. is the holding company my husband and I have created for business investing and advising since our exit from Encompass and I am eager to gain more knowledge about out to incorporate philanthropic efforts into our family office. My schedule is flexible and I do not anticipate any issues with the time commitment for Changemakers.", "references": "Bill Kraich 970-405-4179, mr.kraich@gmail.com and Curt Bear 970-218-3186 curt@locothinktank.com"}, {"name": "Leticia Lucio", "positionTitle": "Retired Probation Officer", "employer": "Larimer County Probation", "email": "leticia_lucio@hotmail.com", "phone": "(970) 203-5513", "howHeard": "LinkedIn", "resumeLink": "https://www.jotform.com/uploads/communityfoundationnc/261256126770153/6583179874384416430/Resume 2026.docx", "challenge": "Two that I have found is the health insurance coverage for cochlear and BAHA (bone anchor hearing aid) for individuals. I personally, having been born with one ear, has a BAHA on one side and regular hearing aid on the other side. Also, the state has clinic in Aurora, CO for Turner's Syndrome, and my hope is to gain wrap around support, including financially, to build and provide such services in Northern Colorado. I was diagnosed with TS at the age of 45, and it is prevalent to girls/females and the need to have the checklist at a younger age is dire to the developments in all areas for life.", "leadership": "I was involved in Family Leadership Training Institute in 2013 and created a vision OYE (Own Your Experience) focused on discussing with legislation to revamp health insurance coverage for all. Also, I was a Peace Corps Volunteer in Boaco, Nicaragua, Central America working with my counterpart in event planning, budget planning, organizational development, in providing services and activities for young teen males huffing rubber glue and teen girls encouraged to engage in prostitution as financial contribution to family systems.", "collaboration": "I worked with the Urban Youth Development Sector volunteers from my group in Nicaragua to draft a grant to US AID to fund a weekend retreat for teen girls with breakout sessions focused on team building, conflict resolution, communication, health decision making to name a few. Furthermore, in college, i worked with a team during my Senior Seminar to draft a grant for Lambda Center, 30 years ago in Larimer County, to fund same sex parenting classes. In my recent career as a Probation Officer, i was member of the Wellness Committee. Although I provided translating and interpreting services throughout my career path, as of late, since retiring in March 2026, i made it official as an LLC, Shedding Light to Change, a one-stop shop for translating needs in Spanish and English.  SLC is founded on the basis of providing high-quality bilingual translating services to an array of clientele, including Government, medical, legal, non-profit, corporate, and technical contract backgrounds.   SLC is designed as a web-based company, such that communication, transfer, and retrieval of information can be steadily handled via email and the Internet securely.  \n\nDue to this flexibility and convenience, SLC is able to offer highly competitive quotes in-line with market level pricing for this specialized service no matter where your office resides.", "hopeToGain": "Networking, knowledge from those already in the thick of it all, and prevention of reinventing the wheel.", "optionalDetail": "I graduated from CSU in 1998 with a degree in Human Development and Family Studies, with an emphasis in Spanish and Criminal Justice. I am bilingual, resourceful, and passionate about community. I am currently helping two friends navigate the process of caring for an elderly parent, by connecting them to resources with the goal of wrap around services for their loved one. An experience I am too familiar with in doing five years ago, for my own mother.", "references": "Karla Silvernale (k5silver@yahoo.com; 303-909-3398) and Tracy Tope (tracy.andersontope@judicial.state.co.us; 720-339-5127) Tracy Tope"}, {"name": "Megan Greer", "positionTitle": "Executive Director", "employer": "FoCo Cafe", "email": "megan@fococafe.org", "phone": "(970) 988-0933", "howHeard": "Referral from Changemaker alumni  -  Chamber of Commerce communication", "resumeLink": "https://www.jotform.com/uploads/communityfoundationnc/261256126770153/6583238716515274039/MEGAN GREER.Resume2026 (1).pdf", "challenge": "Affordability and preventative wellbeing initiatives are the biggest opportunities I see facing our region. Our Social Determinants of Health (SDOH) are becoming more and more out of reach for many, especially those on the ALICE borderline, benefits cliff (or who have lost benefits completely), or living below the poverty line.  Organizations are going to need to work comprehensively together to hold individuals and families up in innovative ways. We have incredible opportunities to capitalize on our collective abundance to ensure that areas where we can mitigate household expenses (like food, transportation, and clothing) by increasing free/low cost access are elevated. \nOf all communities, I believe Fort Collins residents truly want to be inclusive and part of the solution. We have a real opportunity to stop building or perpetuating parallel systems where those who have are separated from those who don't and we, instead, start bringing people together to participate in one system that allows a community give-and-take where everyone has greater access.", "leadership": "Prior to returning home to Fort Collins, I served as Executive Director of Blue Zones Project in Naples, Florida. My specialized focus was food policy and security. When our community was devastated by Hurricane Ian, I called all the partners in the food industry together to coordinate an emergency action plan for food distribution and access. This ranged from local/regional farmers to corporate distributers, churches, food banks, school districts and all food industries in between. Within 24 hours, we had sites established, refrigeration and storage secured and distribution models lined out that could get to areas where people were isolated or immobile due to damage or flooding. \nThis process and activation served as a model moving forward that the Emergency Operation Centers now use in Southwest Florida.", "collaboration": "I believe effective philanthropy is all about storytelling. When you can help donors and participants truly understand and experience the WHY behind the ask, or the impact that their contribution will make, the funding generally flows easily. \nI am currently collaborating with three different nonprofits, two farmers, and five businesses to host a fundraiser that highlights the intersection of homelessness, food-insecurity, and supporting local agriculture. Each is impacted by the other and they all benefit when one improves. We are focusing on returning to preventative wellbeing initiatives through healthy food access, grounding - by being on the farm- and sharing stories of success that are founded in the power of one finding their community and becoming connected to it. \nI am learning that we all have access to so many resources and amazing partners, so when we work together, the sky is the limit.", "hopeToGain": "My greatest hope is to develop and pilot successful models that allow us to implement preventative wellbeing initiatives that result in cost savings for employers, families and individuals while breaking down parallel systems that are already under attack. Threats or full discontinuation of access to SNAP, HUD, Medicare/Medicaid etc. will have trickle down effects that will last for years. \nNow is the time to start building systems that work and address the root causes of our declining SDOH and I hope to do so as a NoCo Changemaker.", "optionalDetail": "I'm often described as someone who \"sees everything\" when it comes to how and why a system works the way it does, and how it could be changed to be more accessible, inclusive, and effective. I LOVE to work toward change and innovation to better serve the community and I am so excited at the opportunity to participate in a space with like minded leaders that want to think outside of the box to ensure care for all.", "references": "Tessa LeSage, tlesage2@gmail.com, 239-218-0121, Matt Offutt, matthew.offutt@pnc.com, 303-775-7694"}, {"name": "Rachel Olsen-Towlen", "positionTitle": "Interim Executive Director", "employer": "Alliance for Suicide Prevention of Larimer County", "email": "rachel@imaginezerosuicide.org", "phone": "(303) 917-1849", "howHeard": "Referral from Changemaker alumni", "resumeLink": "https://www.jotform.com/uploads/communityfoundationnc/261256126770153/6577024571712830506/Most recent_R.Olsen-Towlen_Resume (1).pdf", "challenge": "An important challenge facing Northern Colorado is decreasing stigma around mental health, increasing access to care, and helping people feel like they belong. We can help break down the stigma around mental health and addiction, and encourage a culture of wellness, resilience, and connection through county-wide events, education, and communications focused beyond those working in behavioral health. The first step to building a healthy community is creating a safe space for honest dialogue about the real challenges in life, sharing stories, and learning that you are not alone. Every business, nonprofit, and community member has a role in changing how we approach mental health. Events such as the Teen Self Care Fair, The Caregiver Summit, Mental Health Matters nights, Music Festivals that incorporate mindfulness and somatic healing, Stay: A night of Metal (Music) and Hope are all examples of bringing people together to connect, heal, and learn coping skills. Philanthropy can help fund more community-building events, from neighborhood potlucks to H.O.P.E. Certification for businesses, to help create connection and belonging and break down the stigma and isolation felt by so many.", "leadership": "As the Deputy Director for the Alliance for Suicide Prevention of Larimer County and community lead for the Colorado National Collaborative (a collaboration between CDPHE, SAMHSA & CDC). My work focuses on increasing interagency communication and coordination of services, with the goal of creating a stronger and wider safety net of mental health support and suicide prevention in Larimer County. \n\nIn Larimer County, we have seen incredible changes across systems with intentional community collaboration. Through our efforts, we achieved a 27% decrease in suicide rates between 2019-2023. While 2024 brought disappointing news as our rates rose again, we saw another reduction in 2025, leading to a consistent decrease over time. Larimer County has been held up by state and national partners as an example of cross-sector collaboration producing results, and we know that with sustained effort and attention, we will continue our success over time.", "collaboration": "The very first Teen Self Care Fair (TSCF) was held in 2019. I have led the TSCF for 7 years, holding 8 fairs and planning the next one for this fall. We have watched its success grow from year to year. \n\nWhen planning the initial event, we set out to create a safe space for youth to learn new coping skills and join the conversation around suicide prevention through experiential learning. The TSCF is not just a fair; it's a crucial step toward addressing the pressing concerns of youth's rising mental health issues by providing youth with the coping skills, support, and resources they desperately require. The fair's multi-faceted approach offers hope and healing to our community's youth. \n\nTSCF would not be possible without our amazing community partners. Our service-provider-driven resource fair features local behavioral health organizations, providing an approachable, accessible venue for community members to find care for themselves and/or their loved ones. In addition to the resource fair, a wide range of programming engages youth in self-care practices and community-building activities, including yoga, sword fencing, art projects, mindfulness, skateboarding, pilates, poetry, meditation, and music. All led by community partners, dedicating their time and talents to help the next generation. Not only are activities free, but all attendees receive vouchers for one free meal from on-site food trucks. \n\n\nThe TSCF has been held 9 times, growing from 200+ youth in 2019 to over 1,000 people in the fall of 2024. The TSCF is accessible to all, with free entry, sessions, community resource booths, food, and giveaways. \n\nTSCF represents an exceptional collaborative process, engaging over 30 community-based organizations spanning local government, nonprofits, and businesses in a show of support for Northern Colorado youth. \n\nI have learned that when people have a place to come together, have fun, and learn new skills, it creates an incredible culture of care. I have been so honored to watch the TSCF grow over the years, and I can\u2019t wait to see how it evolves in the future, meeting new needs as they arise.", "hopeToGain": "I hope to learn more about collective change through collaboration. There are many issues with the non-profit industrial complex, so how can the community come together to make real and lasting change to break the cycles? In addition, how can we, as philanthropists, lighten the load and empower dedicated champions to do even deeper, more impactful work without the constant burden of fundraising and scarcity?", "optionalDetail": "", "references": "Kim Moeller, 970-420-7779, kimmoeller.co@gmail.com Ash Neufeldt, 785-317-2154, aislin.neufeldt@gmail.com"}, {"name": "Sara Potter", "positionTitle": "Branch Manager", "employer": "fnbo", "email": "spotter@fnbo.com", "phone": "(970) 690-2647", "howHeard": "Referral from Changemaker alumni", "resumeLink": "https://www.jotform.com/uploads/communityfoundationnc/261256126770153/6575356045024855633/Resume .docx", "challenge": "I would say the challenge is how our NoCO communities still feel a little siloed and not as collaborative as they should / could be - which gives us a big opportunity to partner together better.  Collaborating across communities through philanthropy will give all non profits the opportunity for more exposure for volunteers and donors.", "leadership": "I am a volunteer for the American Cancer Society.  For many years each community (Greeley, Windsor, Loveland and Fort Collins) had their own relay for life fundraising event that supports ACS.  In 2018 The local American Cancer Society office approached me about combining all of these events into one event and I helped spearhead the effort and chaired the event the first 2 years it combined all of these communities.", "collaboration": "Again with my volunteer role with The American Cancer Society I was able to work closely with another local fundraising event in our community and the ACS staff to work together in finding a solution for shared sponsors / donors between the 2 events. We found both events were trying to approach the same sponsors and everyone was being declined so we worked together on our approach that would benefit both events / ACS and enabled us to get bigger sponsor dollars.", "hopeToGain": "I'd love to learn more about the non profits and philanthropy opportunities in NoCo as I feel I am only scratching the surface of some great organizations and other ways to give back to our communities.", "optionalDetail": "I live in Loveland and work in Greeley, and was raised in Windsor so I am familiar enough with several of our communities!  I have extensive volunteer history (please see resume) and would love to learn about more opportunities as well as learn more about the grant writing process.  In my current board member role for The Greeley Family House and our current search for an E.D. we are having many conversations around grant writing that has opened my eyes about the opportunities and process of it all.", "references": "Sarah Farmer (director fnbo) 970-381-4744.  Jessica Wright (the american cancer society) 33-652-7076"}, {"name": "Susan Bricker", "positionTitle": "ECOM Associate", "employer": "Scheels", "email": "susan22bricker@gmail.com", "phone": "(970) 219-9095", "howHeard": "Referral from NoCo Foundation board or staff", "resumeLink": "https://www.jotform.com/uploads/communityfoundationnc/261256126770153/6567700077028816490/Susan Bricker Resume - 2026.docx.pdf", "challenge": "Tolerance and acceptance of others is a challenge for our community (as well as the country). Philanthropy can provide opportunities to underserved populations and exposure to experiences and perspectives that citizens might not otherwise be provided.", "leadership": "During the summer of 2024 I coordinated a block party in my immediate neighborhood with a band and food truck and invited all neighbors as well as guests to attend. It was an evening of fun and mingling and brought neighbors closer together which has been sustained 10 months later.", "collaboration": "Last summer I served as a volunteer table host for Longer Tables Denver event. Leading up to the event we had virtual host meetings to talk about expectations, share ideas for recruiting guests and coordinate day-of tasks.  It was an eclectic group of people coming together with vastly different experiences and motivations. Working together and allowing everyone to share input brought out the best collective ideas and helped us have a cohort to look forward to seeing at the day of the event.", "hopeToGain": "I am a big advocate for this community and look forward to learning about new opportunities to support it. I expect to be surprised learning about programs and people doing great work that haven't previously been on my radar.", "optionalDetail": "I think I may be in a unique age/employment position compared to other applicants. I was downsized by Otterbox in September 2025 and have accepted it as a semi-retirement. I worked as a seasonal tax preparer for H&R Block in early 2026 and now work part time at Scheels. These last two jobs are not reflected on my resume. The seasonal/part time schedules allow me to continue with regulat volunteer commitments for the school district, Friends of the Poudre Libraries and UCHealth.", "references": "Amy Malara 970-214-1559 malaraamy000@gmail.com Leslee Gooch 970-846-5074 lesleeg@comcast.net"}, {"name": "Tiffani Sargent", "positionTitle": "Sales Manager", "employer": "Toll Brothers at Timnath Lakes/Heron Lakes", "email": "tsargent@tollbrothers.com", "phone": "(720) 305-6554", "howHeard": "Referral from Changemaker alumni  -  Chamber of Commerce communication  -  Referral from NoCo Foundation board or staff", "resumeLink": "https://www.jotform.com/uploads/communityfoundationnc/261256126770153/6582596066965310600/Tiffani Sargent- 6-25-26 Resume.pdf", "challenge": "Sometimes it takes just one break, one act of kindness or just a little generosity to make a big difference in someone\u2019s life. I have seen this happen numerous times and believe we can spread generosity and wealth throughout our communities through kindness, creativity and education. I believe philanthropy is a constant opportunity AND a major challenge in every community, and this is why programs like Changemakers are invaluable, to help us learn how to develop new ways to give back and to keep long-running charitable activities going strong with continued support and leadership. For example, my grandfather served as a Rotarian for more than 50 years and delivered food daily to seniors through meals on wheels until he was 87. And I have a good friend who started an organization called, Goodie Two Shoes to provide kids with new shoes in Las Vegas, and as of today, they have raised millions of dollars and provided hundreds of thousands of shoes to children, changing their lives daily, by giving them confidence and a new attitude both in and out of the classroom. And in both examples, it took just one person to enact impactful, and positive change that can gain momentum and grow into a massive movement.", "leadership": "As a former television news reporter in Las Vegas, I found I needed to find stories to help renew my own faith in humanity, especially during the recession. It seemed, we were only featuring foreclosures, unemployment, homicides, car accidents and robberies. So, I pushed to start a \u201cgood news\u201d segment. And after some lobbying, I started, \u201cPositively Las Vegas\u201d where I covered everything from pet rescues from foreclosures, to breast cancer survivors creating beautiful wigs for those losing their hair, to a 10-year-old making muffins for the homeless.  I received wonderful feedback and story suggestions from viewers all across the state.\n   My efforts even helped located a man with dementia who had wandered off in the hot desert, possibly saving his life.  I have learned paying it forward is addicting and contagious and I want to continue to help enact positive change.", "collaboration": "I recently graduated from Leadership Fort Collins, where we were challenged to make a difference through a class project. Our team worked closely with Neighbor to Neighbor and cleaned up their community garden, and held a fundraiser to help families with their utility bills. My role was not only to help coordinate these activities and participate in the physical clean up, but I also created a \u201cnews story\u201d or package, through video, interviews, music, graphics and a call- to-action for our final presentation. It felt awesome to give back and prompt others to do the same:)", "hopeToGain": "As a NoCo Changemaker, I really hope to get a greater perspective on how to make a greater impact within my community and beyond. Philanthropy has always been a big focus within my own family, and even my 11-year-old niece has her own candle business where she gives a portion of her proceeds to help others. And after 20 years of serving on boards, emceeing philanthropic events and reporting about changemakers in other states, I truly want to find ways to give back right here in NoCo where I hope to stay.", "optionalDetail": "I grew up in Northern Colorado surrounded by many of the people who helped create the NoCo Foundation 50 years ago.  And I am excited to learn from today's stellar Changemakers and see how I can continue the positive momentum.", "references": "Amanda Miller amanda@psc.biz 970.231.0316; Kari Lewis klewis1@tollbrothers.com 720.656.4036"}, {"name": "Travis Hitt", "positionTitle": "Executive Director", "employer": "The Crawford Child Advocacy Center", "email": "travish@crawfordcac.org", "phone": "(303) 522-8260", "howHeard": "Chamber of Commerce communication", "resumeLink": "https://www.jotform.com/uploads/communityfoundationnc/261256126770153/6575257595946077647/Travis Hitt - Resume.pdf", "challenge": "One of the biggest challenges facing Northern Colorado right now is the growing gap between need and capacity. As the cost of living rises and economic pressures mount, more people are turning to nonprofits and community organizations for support, but those same organizations are often operating with tighter budgets and leaner staff. The result is a widening gap between need and capacity, at the exact moment that gap should be closing.\n\nThis pressure shows up in real ways: harder fundraising conversations, stretched staff, and organizations forced to cut the outreach and relationship-building work that helps the public understand and trust their mission in the first place. Many grants exclude administrative costs, so the very capacity needed to communicate clearly and build community relationships is often the first thing to go.\n\nPhilanthropy, particularly flexible individual giving, can help break this cycle. Unrestricted donations let nonprofits invest in people and communication, not just programs. Just as important, a strong culture of giving signals to a community that people are willing to show up for each other even in hard economic times. When we support both the work and the people doing it, we create room for connection and durable, long-term impact\u2014not just a bridge over the gap, but a reason for people to believe the bridge will hold.", "leadership": "I joined my daughter's school Parent Teacher Organization at Shepardson Elementary and was elected president, staying on for an extra year to see a generational transition through. The PTO had long operated on \"this is how we've always done it\" tradition, but volunteering looks different post-COVID, especially for parents juggling work and family. If we wanted people to show up, we needed to meet them where they were rather than ask them to fit an old model.\n\nWorking alongside the rest of the PTO board, I helped identify clarity as one of our biggest barriers. Volunteer opportunities were scattered across different platforms with unclear time commitments, and giving meant navigating some combination of Venmo, PayPal, checks, cash, and Google Forms, on top of overwhelming email threads. Together, we consolidated everything into a single platform, with clear expectations and time commitments listed upfront for volunteering, and one simple way to give for fundraising. Lowering that friction made it easier for more people to say yes, in whatever small way worked for them, rather than relying on a few people to do a lot.\n\nThe timing mattered too: our prior leadership had moved on to the next school, so I worked with the incoming board to recruit and onboard an entirely new generation of PTO members, all while implementing these changes. Across three fundraising events and ongoing staff and school support activities, this collaborative approach helped grow participation, not by asking more of the same people, but by making it easier for more people to engage. That experience taught me that lasting community engagement isn't about working harder within an existing structure, it's about understanding why people aren't engaging and removing the barriers in their way, together with the people who care about the same mission", "collaboration": "One of my most successful collaborations was organizing a county-wide fundraising event that paired seven community leaders with seven dance instructors from across Weld County. The goal was for each duo to learn and perform a dance routine while promoting my organization through their networks. Beyond the ten participants, the event grew into a true community collaboration: local dance schools, businesses, and partners across the county got involved, each contributing their own networks and connections, which extended the event's reach far beyond what I could have built alone.\n\nMy role involved recruiting participants and partners, coordinating logistics, and helping each person understand how to leverage their own network, whether that meant suggesting specific ways to share the event, identifying who in their circle might be a natural connector, or simply giving people the confidence to ask. I also supported each team through challenges, whether it was stage fright, unfamiliarity with social media, or lack of time. Leading this group required patience, adaptability, and a strong sense of each person's strengths and comfort zones, while also trusting partners to bring their own communities into the effort. I learned how to navigate different personalities, offer support without overwhelming, and stay flexible when plans needed to change. The experience reinforced the power of collaboration: when people feel supported and seen, they're not only more willing to step outside their comfort zones, they're also willing to bring others along with them.", "hopeToGain": "As a NoCo Changemaker, I hope to gain a deeper understanding of how the broader philanthropic landscape in Northern Colorado fits together, individual donors, nonprofits, foundations, corporate giving, and government partners alike. I stepped into the Executive Director role at the Crawford Child Advocacy Center in March 2025, and I'm still building out my understanding of how these pieces connect across the region. I want to learn from others' experiences and involvement, what's worked, what hasn't, and how different elements of this puzzle support one another, so I can see where our work fits and where there's room to do more.\n\nAt the same time, I want this to be a two-way exchange. I bring a nonprofit leader's perspective, having seen firsthand how funding decisions, capacity constraints, and community trust play out on the ground, and I hope to offer that lens to my fellow Changemakers as much as I hope to learn from theirs. I believe lasting impact comes from strong, community-driven partnerships built on mutual learning, and I'm excited to grow both personally and professionally, as a new ED, through this program. By understanding how the pieces fit together and contributing what I've learned along the way, I hope to help align our collective efforts to create meaningful change across Northern Colorado.", "optionalDetail": "As the new Executive Director of the Crawford Child Advocacy Center, I bring several years of hands-on community engagement and fundraising leadership in Weld County, and I'm eager to extend that same depth of relationship-building into the broader Northern Colorado community. I see NoCo Changemakers as an opportunity to grow as a leader while contributing meaningfully alongside others who care about making a difference. I'm comfortable in collaborative, community-centered groups and bring a genuine willingness to listen, learn, and share as part of this next chapter, both for myself and for the organization I now lead.", "references": "Emily Stanfill: eraegra@gmail.com (503) 939-2530"}, {"name": "Tricia Vincent", "positionTitle": "Chief Development Officer", "employer": "Boys & Girls Clubs of Larimer County", "email": "tvincent@bgclarimer.org", "phone": "(303) 257-7968", "howHeard": "Referral from NoCo Foundation board or staff", "resumeLink": "https://www.jotform.com/uploads/communityfoundationnc/261256126770153/6583400950818658452/Tricia Vincent Resume 2026.pdf", "challenge": "I think one of the biggest challenges facing Northern Colorado is the increasingly high cost of living, which is making our community out of reach for the diverse residents and families who have made it such an amazing place to live. We are incredibly fortunate to have a robust nonprofit ecosystem that provides resources of all kinds to people and families. Philanthropy can play a vital role by funding these organizations, ensuring that everyone who lives here can get a hand up when they need it most.\n\nThe word philanthropy translates almost literally to mean \"love of humanity,\" and I think that is such a beautiful way to view it. When we love and care for one another, the entire community is better off.", "leadership": "A recent example of this was my involvement in the 2024\u201325 Leadership Fort Collins (LFC) cohort. For our group's impact project, I suggested and rallied our team around focusing on something \"un-glamorous\" but deeply impactful. I know how difficult it can be for organizations to get volunteer support for their actual, behind-the-scenes needs. Well-intentioned volunteers often show up expecting a certain experience, and nonprofit leaders often feel pressured to carefully curate those experiences. Along with my group, I wanted our project to create maximum impact for an organization without creating extra work for their staff.\n\nWe ultimately chose to support Homeward Alliance with a file digitization project. After transitioning to a digital intake process a few years ago, they were left with 50+ large tubs of physical paperwork that still needed to be stored. Our team dedicated dozens of hours to sorting, scanning, and saving these files. This ensured the organization retained access to its historical records while freeing up an entire closet of space. Through this project, we both learned and demonstrated that the most impactful leadership isn't showy or glamorous. It's a willingness to show up, roll up your sleeves, and do exactly what the community needs.", "collaboration": "This may be a nontraditional answer for this question, but it's hard for me to think of one specific example because collaboration is something I do every day in almost every facet of life. Sometimes my role in facilitating collaboration is to lead/organize it. This involves making sure everyone is heard, trying to consider all viewpoints, proposing solutions that meet the needs of multiple interests groups, and ensuring that everyone involved feels good about the direction things are headed. Other times effective collaboration means letting someone else take the lead, particularly if they have more knowledge about or responsibility for the task. This means having the humility to let others' needs and wants rise to the surface and stepping back to support their vision. \n\nWhether I am leading fundraising strategy alongside a board committee or supporting my team in their individual growth, collaboration is the baseline of my work. I believe that effective collaboration requires active listening and high emotional intelligence. You have to care just as much about the relationship and the process as you do about achieving the final goal.", "hopeToGain": "I'm celebrating a milestone birthday this year and with entering a new decade of life, I'm starting to think about how my husband and I can make a more strategic philanthropic impact in this community that we deeply love raising our family in. While I've worked in the NoCo nonprofit community for almost 20 years, both on the philanthropy and fundraising side, I've spent very little time thinking about my personal approach to giving back and how we can do it in a way that moves the needle in an area that is meaningful to us. I'm excited at the opportunity to connect with other like-minded individuals around engaging in philanthropy and utilize the information provided through this program to really get intentional about my personal giving. I also have been incredibly impressed with every NoCo Foundation program I've participated in, so I know the content will be valuable and enjoyable!", "optionalDetail": "I've been interested in participating in this program since it first launched and am so thrilled that the bandwidth and timing is aligning for me this year to apply.", "references": "Christina Cooper, 970-988-2176"}, {"name": "Tristan Barbattini", "positionTitle": "Trust Associate", "employer": "First Western Trust", "email": "tristan.barbattini@myfw.com", "phone": "(970) 229-4711", "howHeard": "Referral from Changemaker alumni", "resumeLink": "https://www.jotform.com/uploads/communityfoundationnc/261256126770153/6583002529342011280/Tristan.pdf", "challenge": "Homelessness in Northern Colorado has for the last few years become a thing. In the past, it was only in the \"big city\" of Denver that struggled with it and it has now come to our smaller towns here in Northern Colorado. I think philanthropy can play a very strong role in helping this very complex problem.", "leadership": "I live in Loveland in a neighborhood that is right next to a new construction subdivision. There is a ton of trash that blows into our subdivision from the building going on next to us. I walk my dog daily along the border of the 2 neighborhoods and have started picking up the trash. Because I feel that if it bothers me it must bother others. I have recently attended our HOA meetings to promote a trash pickup party.", "collaboration": "I collaborate a lot at work. We are currently going through audit preparation and we get demands from our higher ups. I, as trust associate, have to delegate who has to do what on our team to complete these tasks. So I am the director of the task and ultimately responsible in reporting our data. I compile, create spreadsheet and deliver this information in a timely manner. And I collaborate with my 2 Trust Officer's to confirm the data.", "hopeToGain": "I hope to meet and learn from community go-getters. I have not done a lot of volunteering recently and since I am now an empty nester, I have the time to focus on others outside of my home and work lives.", "optionalDetail": "", "references": "Marissa Riopelle at Marissa.Riopelle@myfw.com; Stephanie O'Hearn, Stephanie.O'Hearn@myfw.com"}, {"name": "Wade Keith", "positionTitle": "Director of Community Engagement", "employer": "Breeze Thru Car Wash", "email": "wade@breezethrucarwash.com", "phone": "(970) 441-5115", "howHeard": "Referral from NoCo Foundation board or staff", "resumeLink": "https://www.jotform.com/uploads/communityfoundationnc/261256126770153/6562472385414263911/Wade_Keith_Upgraded_Resume.docx", "challenge": "A big challenge in our communities is watershed health.  We are coming off the worst water year in recorded history and I feel that philanthropy could play a role in educating the public to decrease the amount of water that is wasted.  The challenge would be to break bad habits from people (like me) who move here from states that do not have water issues and waste water.  \n\nI see an opportunity for non-profits to get more creative with their fundraising.  Over the last two years, I am hearing reports that fundraising events are producing less results from years prior.  I'm a creative person and would love to assist as many non-profits with their fundraising efforts.", "leadership": "Emily S. is the junior Youth of the Year at Boys and Girls Club (BGCA) of Larimer County.  To achieve this honor, she had to write and deliver a speech to the staff at BGCA. I judged the initial presentation and we voted her in as a finalist.  After the judging, I volunteered my services to coach her on her presentation so can move to the next level.  Side note, I help people with speech preparation and delivery as a volunteer side gig.  We spent two afternoon sessions polishing her speech and she went on to compete and won.  She has now moved on to the state level competition.\n\nLast Saturday at the Boys and Girls Club Gala, she delivered the same speech and received a standing ovation.  She took my coaching seriously and made adjustments to her speech which paid off. This brought me to tears as I had a hand in her professional development. I see Emily being a community leader in the future and making positive change for our communities.", "collaboration": "We (Disabled Resource Services and Breeze Thru Car Wash) created a Bluesfest that happens in August at Odell Brewing that raises money for Disabled Resource Services (DRS).  We are going into it's third year.  This is a special day for me specifically as I volunteer my time and emcee the event.  I also booked all the bands for this year.  We raise money for a good cause and it brings a ton of exposure to DRS.\n\nThis year, Bluesfest was possibly not going to happen due to losing the grant for funding.  We (Breeze Thru Car Wash) decided to fund the event from our community budget to keep this effort going.  \n\nI learned from the experience that smaller non-profits need as much help as possible to gain brand awareness and funding.  Many non-profits don't have the operating budget to fill roles and I'm happy to offer my services to give them a boost.  My motto when it comes to participating in non-profit initiatives is, \"Service First, Exposure Second.\"", "hopeToGain": "I need to understand more on grants, grant writing, expanding teams for more community outreach, creating an effective volunteer program for our business, foundations, etc.\n\nMy role as of Jan. 1st became Director of Community Engagement.  Community Engagement has been part of my job for years.  Now that it is 100% of my job, I need to fill in the gaps of my understanding and this program will help me get there.  I understand it from the donor side.  I need to understand more of what happens from the non-profit side.", "optionalDetail": "I would like to thank you for putting together programs like this! I recently graduated from the Water Literate Leaders program and the education I received from that program was outstanding!  I had a goal to become literate with water issues and that program helped me achieve that goal.\n\nMy next initiative is to understand the non-profit/philanthropy piece to a high level and this program will help me achieve that goal.  I appreciate your consideration!", "references": "Jep Enck (970) 207-1550 jep@enckresources.com, Janice McAteer (970) 488-2034 Janice McAteer jmcateer@wynco.bbb.org"}, {"name": "Wyatt Warberg", "positionTitle": "Wealth Strategist", "employer": "Mountain Financial Capital", "email": "wyatt.warberg@mtnfincapital.com", "phone": "(970) 283-2021", "howHeard": "Referral from NoCo Foundation board or staff", "resumeLink": "https://www.jotform.com/uploads/communityfoundationnc/261256126770153/6567514306292952942/Wyatt Warberg NoCo Changemakers Resume.pdf", "challenge": "One that is prevalent for my generation is housing affordability in Northern Colorado. I have noticed a significant amount of my former high school classmates moving out of Fort Collins due to the unaffordability in the town. Either rent is too high or they are unable to outbid competitors on the housing market. Philanthropy can help educate the community on the issue and the factors that do play into the rising costs of housing in Northern Colorado. It can also help with the affordability. Charitable funds can be established to assist in rental stipends or down payment assistance programs.", "leadership": "Since graduating from High School, I have been involved in Young Life, a Christian Youth Ministry, as either a volunteer leader or on staff in Salt Lake City. When I was on staff as an administrator, it was part time during my final year of college. Young Life in Salt Lake City was going through a lot of changes on staff during this time as our local Area Director stepped down and I was then reporting to our Regional Director, who was busy overseeing all of Utah, Wyoming, and Idaho. I had to organize Young Life activities and manage both part-time staff members and volunteers. While I was only on staff for a year, I helped keep Young Life alive in Salt Lake City and overall, equipped young adults to be mentors for kids in the Salt Lake City community.", "collaboration": "My family and others have recently been tasked with forming our own family non-profit foundation, the Janet D Shea Educational Foundation. This foundation was my grandma\u2019s goal when she passed to start a fund that will provide full-ride scholarships to those pursuing secondary schooling. The foundation was not established until she passed, which left my family figuring out how to start a family foundation with minimal guidance from my grandma\u2019s wishes. While my family does work well together, we\u2019ve all had to navigate the challenges of upholding Janet\u2019s wishes with the foundation as well as discuss who is an ideal scholarship recipient outside of our own biases. We also had to collaborate extensively and delegate roles and tasks to start something none of us have had prior experience in.", "hopeToGain": "As a financial planner, I hope to better understand not only the challenges our communities in Northern Colorado face, but also how I can educate clients on best ways to face these challenges for themselves, their families and friends, or how they may be involved in the solution for others. Most times, clients aren\u2019t looking for the highest returns in their investment accounts, but affordability and budgeting for a new home, secondary school expenses for their kids, or how to find a job in an unstable job market. I hope that NoCo Changemakers will present me with the charitable options that can help my clients with these challenges.", "optionalDetail": "", "references": "Ed Moore, ed.moore@mtnfincapital.com,(720) 445-6901  Lisa Nelson, lisa@janetdsheafoundation.org,(970) 231-5131"}], "rubric": [{"criterion": "Community insight & philanthropic role", "weight": 0.15, "question": "How clearly does the applicant identify meaningful Northern Colorado challenges/opportunities and describe philanthropy as a useful part of the solution?", "scores": ["Vague issue or limited understanding of philanthropy.", "Identifies an issue but offers limited connection to philanthropy or local context.", "Clear issue and reasonable role for philanthropy.", "Strong local insight with thoughtful philanthropic role.", "Compelling systems-level insight; understands philanthropy as funding, convening, learning, and/or catalytic action."]}, {"criterion": "Personal philanthropy motivation", "weight": 0.2, "question": "Does the applicant show genuine interest in developing their own personal philanthropy, not primarily fundraising for their nonprofit, advancing employer/community relations, or networking for their job?", "scores": ["Primarily job-related fundraising, organizational benefit, or networking; little personal giving/learning intent.", "Some personal interest, but mostly framed around employer/nonprofit fundraising or professional networking.", "Balanced personal and professional motivations; may need probing.", "Clear personal philanthropic curiosity and desire to develop individual/family giving practice.", "Strong, explicit commitment to personal philanthropy, values-based giving, and long-term community contribution beyond job responsibilities."]}, {"criterion": "Leadership & initiative", "weight": 0.15, "question": "How strong is the applicant\u2019s demonstrated leadership or initiative in community, volunteer, civic, nonprofit, or professional settings?", "scores": ["Limited evidence of initiative or leadership.", "Some participation but limited ownership or outcomes.", "Solid example with identifiable role and positive contribution.", "Strong example with clear initiative, outcomes, and follow-through.", "Exceptional leadership; created, scaled, or sustained meaningful community impact."]}, {"criterion": "Collaboration & humility", "weight": 0.15, "question": "How well does the applicant demonstrate collaboration, listening, respect for partners, and learning from others?", "scores": ["Little evidence of collaboration or learning.", "Collaboration is described generally without clear role or reflection.", "Clear collaborative example and basic learning.", "Strong example with thoughtful role clarity and reflection.", "Exceptional cross-sector/team collaboration; shows humility, adaptability, and shared ownership."]}, {"criterion": "Learning orientation & cohort contribution", "weight": 0.15, "question": "Would the applicant actively learn from the cohort and contribute constructively to peer learning?", "scores": ["Limited curiosity or unclear contribution.", "Some curiosity but mostly transactional/one-way benefit.", "Likely to learn and participate.", "Strong curiosity and relevant lived/professional perspective.", "Highly reflective; likely to elevate the cohort through questions, experience, and generosity of perspective."]}, {"criterion": "Alignment with program purpose", "weight": 0.1, "question": "Overall, how well does the applicant align with NoCo Changemakers as a program for emerging/current leaders developing strategic, personal, community-centered philanthropy?", "scores": ["Poor program fit or unclear reasons for participating.", "Partial fit; primary goals may not match program purpose.", "Good fit with some questions to clarify.", "Strong fit and good timing.", "Excellent fit; participation would likely accelerate personal philanthropy and community impact."]}, {"criterion": "Overall recommendation", "weight": 0.1, "question": "Taking the written application as a whole, how strongly do you recommend the applicant for the 2026/27 cohort?", "scores": ["Do not recommend.", "Consider only if space remains.", "Recommend with reservations or follow-up needed.", "Recommend.", "Strongly recommend / priority candidate."]}]}
+
+</script>
+
+<script>
+/* ============== Data ============== */
+const DATA = JSON.parse(document.getElementById('data-json').textContent);
+const APPLICANTS = DATA.applicants;
+const RUBRIC = DATA.rubric;
+const RUBRIC_KEYS = ['communityInsight','personalPhilanthropy','leadership','collaborationScore','learningOrientation','programAlignment','overallRecommendation'];
+const REC_OPTIONS = ['Admit','Waitlist','Discuss','Do not admit'];
+
+const FIELD_DEFS = [
+  {key:'challenge', label:'Challenge / opportunity', icon:'◆', question:'What challenge or opportunity in Northern Colorado does the applicant identify, and what role do they see for philanthropy?'},
+  {key:'leadership', label:'Leadership / initiative', icon:'◆', question:'Demonstrated leadership or initiative.'},
+  {key:'collaboration', label:'Collaboration', icon:'◆', question:'Demonstrated collaboration, listening, and humility.'},
+  {key:'hopeToGain', label:'Hope to gain', icon:'◆', question:'What the applicant hopes to gain from the cohort.'},
+  {key:'optionalDetail', label:'Optional detail', icon:'◇', question:''},
+  {key:'references', label:'References', icon:'◇', question:''},
+];
+
+/* ============== State ============== */
+const STORAGE_PREFIX = 'noco2627';
+let currentIndex = -1; // -1 = welcome screen, APPLICANTS.length = summary screen
+let evaluatorInfo = {name:'', email:''};
+let responses = {}; // applicantName -> {scores:{}, comments, followup, finalRec}
+let collapsedOptional = {}; // applicantName -> bool (collapsed by default for long optional/refs)
+
+/* ============== Storage helpers ==============
+   Uses window.storage when available (Claude.ai artifact runtime).
+   Falls back to localStorage when this file is opened directly as a
+   downloaded HTML file (the expected normal use case), so reviewers
+   still get autosave/resume in their own browser. */
+const HAS_ARTIFACT_STORAGE = (typeof window !== 'undefined' && !!window.storage);
+
+async function storageGet(key){
+  if(HAS_ARTIFACT_STORAGE){
+    try{ return await window.storage.get(key, false); }catch(e){ return null; }
+  }
+  try{
+    const raw = localStorage.getItem(key);
+    return raw === null ? null : {value: raw};
+  }catch(e){ return null; }
+}
+async function storageSet(key, value){
+  if(HAS_ARTIFACT_STORAGE){
+    try{ return await window.storage.set(key, value, false); }catch(e){ return null; }
+  }
+  try{ localStorage.setItem(key, value); return {value}; }catch(e){ return null; }
+}
+async function storageDelete(key){
+  if(HAS_ARTIFACT_STORAGE){
+    try{ return await window.storage.delete(key, false); }catch(e){ return null; }
+  }
+  try{ localStorage.removeItem(key); return true; }catch(e){ return null; }
+}
+
+async function loadAll(){
+  const ev = await storageGet(`${STORAGE_PREFIX}:evaluator`);
+  if(ev) try{ evaluatorInfo = JSON.parse(ev.value); }catch(e){}
+  for(const a of APPLICANTS){
+    const r = await storageGet(`${STORAGE_PREFIX}:resp:${a.name}`);
+    if(r) try{ responses[a.name] = JSON.parse(r.value); }catch(e){}
+  }
+}
+
+let saveTimer = null;
+function scheduleSave(name){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=>persist(name), 350);
+}
+
+async function persist(name){
+  await storageSet(`${STORAGE_PREFIX}:evaluator`, JSON.stringify(evaluatorInfo));
+  if(name){
+    await storageSet(`${STORAGE_PREFIX}:resp:${name}`, JSON.stringify(responses[name] || {}));
+  }
+  showSavedPill();
+}
+
+function showSavedPill(){
+  const el = document.getElementById('save-pill-text');
+  if(el){
+    el.textContent = 'Saved';
+    setTimeout(()=>{ if(el) el.textContent = 'Saved automatically'; }, 1400);
+  }
+}
+
+function getResp(name){
+  if(!responses[name]) responses[name] = {scores:{}, comments:'', followup:'', finalRec:''};
+  if(!responses[name].scores) responses[name].scores = {};
+  return responses[name];
+}
+
+function isReviewed(name){
+  const r = responses[name];
+  if(!r) return 0; // 0 = not started
+  const scored = RUBRIC_KEYS.filter(k => r.scores && r.scores[k]).length;
+  if(scored === 0 && !r.finalRec) return 0;
+  if(scored === RUBRIC_KEYS.length && r.finalRec) return 2; // complete
+  return 1; // partial
+}
+
+/* ============== Render: Sidebar ============== */
+function renderSidebar(){
+  document.getElementById('ev-name').value = evaluatorInfo.name || '';
+  document.getElementById('ev-email').value = evaluatorInfo.email || '';
+
+  const list = document.getElementById('sb-list');
+  list.innerHTML = '';
+  let completeCount = 0;
+  APPLICANTS.forEach((a, i)=>{
+    const state = isReviewed(a.name);
+    if(state === 2) completeCount++;
+    const btn = document.createElement('button');
+    btn.className = 'sb-item' + (i === currentIndex ? ' active' : '');
+    btn.innerHTML = `
+      <span class="sb-dot ${state===2?'done':state===1?'partial':''}"></span>
+      <span class="sb-item-text">
+        <span class="sb-item-name">${i+1}. ${escapeHtml(a.name)}</span>
+        <span class="sb-item-role">${escapeHtml(a.employer)}</span>
+      </span>`;
+    btn.onclick = ()=> goTo(i);
+    list.appendChild(btn);
+  });
+
+  document.getElementById('progress-count').textContent = completeCount;
+  document.getElementById('progress-fill').style.width = (completeCount/APPLICANTS.length*100) + '%';
+}
+
+/* ============== Render: Welcome screen ============== */
+function renderWelcome(){
+  document.getElementById('mb-title').textContent = 'Welcome';
+  const el = document.getElementById('main-inner');
+  el.innerHTML = `
+    <div class="hero-card">
+      <p class="hero-eyebrow">Reviewer guide</p>
+      <h2 class="hero-title">Welcome, evaluator.</h2>
+      <p class="hero-text">You're reviewing <b>${APPLICANTS.length} applicants</b> for the 2026/27 NoCo Changemakers cohort. Each applicant page shows their full application alongside the recommended rubric — read first, then score.</p>
+      <p class="hero-text">Scores should reflect evidence in the application, not personal familiarity with the applicant. Your responses save automatically in this browser as you go, so you can leave and come back.</p>
+      <ul class="hero-list">
+        <li><span class="hi-num">01</span><span>Enter your name and email in the sidebar so your export is identifiable.</span></li>
+        <li><span class="hi-num">02</span><span>Work through each applicant: read the packet, score all <b>7 rubric criteria</b> (1–5), add optional notes, and choose a final recommendation.</span></li>
+        <li><span class="hi-num">03</span><span>When you're finished, use <b>Export scores (CSV)</b> in the sidebar to download your results for the selection committee.</span></li>
+      </ul>
+      <button class="hero-cta" onclick="goTo(0)">Start reviewing →</button>
+    </div>
+  `;
+}
+
+/* ============== Render: Applicant page ============== */
+function fieldBlockHtml(a, def){
+  const val = (a[def.key] || '').trim();
+  if(!val){
+    return `<div class="pfield"><p class="pfield-label"><span class="ic">${def.icon}</span>${def.label}</p><p class="pfield-empty">Not provided.</p></div>`;
+  }
+  return `<div class="pfield">
+    <p class="pfield-label"><span class="ic">${def.icon}</span>${def.label}</p>
+    <p class="pfield-text">${escapeHtml(val)}</p>
+  </div>`;
+}
+
+function renderApplicant(i){
+  const a = APPLICANTS[i];
+  const r = getResp(a.name);
+  document.getElementById('mb-title').textContent = a.name;
+
+  const mainFields = FIELD_DEFS.filter(f=>['challenge','leadership','collaboration','hopeToGain'].includes(f.key))
+    .map(f=>fieldBlockHtml(a,f)).join('');
+  const extraFields = FIELD_DEFS.filter(f=>['optionalDetail','references'].includes(f.key))
+    .map(f=>fieldBlockHtml(a,f)).join('');
+
+  const rubricHtml = RUBRIC.map((crit, ci)=>{
+    const key = RUBRIC_KEYS[ci];
+    const current = r.scores[key] || '';
+    const pct = Math.round(crit.weight*100);
+    const scaleHtml = [1,2,3,4,5].map(n=>{
+      const desc = crit.scores[n-1];
+      const id = `score-${i}-${ci}-${n}`;
+      return `<div class="scale-opt">
+        <input type="radio" name="score-${i}-${ci}" id="${id}" value="${n}" ${String(current)===String(n)?'checked':''} onchange="setScore('${escapeAttr(a.name)}','${key}',${n})">
+        <label for="${id}">
+          <span class="num">${n}</span>
+          <span class="desc">${escapeHtml(truncate(desc, 58))}</span>
+        </label>
+      </div>`;
+    }).join('');
+    return `<div class="rubric-item">
+      <div class="rubric-item-top">
+        <p class="rubric-name">${ci+1}. ${escapeHtml(crit.criterion)}</p>
+        <div class="rubric-weight-wrap">
+          <div class="rubric-weight-bar"><div class="rubric-weight-fill" style="width:${pct*2}%"></div></div>
+          <span class="rubric-weight-pct">${pct}% wt.</span>
+        </div>
+      </div>
+      <p class="rubric-question">${escapeHtml(crit.question)}</p>
+      <div class="scale-row">${scaleHtml}</div>
+    </div>`;
+  }).join('');
+
+  const recHtml = REC_OPTIONS.map(opt=>{
+    const id = `rec-${i}-${opt.replace(/\s+/g,'')}`;
+    return `<div class="rec-opt" data-val="${opt}">
+      <input type="radio" name="rec-${i}" id="${id}" value="${opt}" ${r.finalRec===opt?'checked':''} onchange="setFinalRec('${escapeAttr(a.name)}','${opt}')">
+      <label for="${id}">${opt}</label>
+    </div>`;
+  }).join('');
+
+  const el = document.getElementById('main-inner');
+  el.innerHTML = `
+    <div class="packet-card">
+      <div class="packet-head">
+        <div>
+          <h2 class="packet-name">${escapeHtml(a.name)}</h2>
+          <p class="packet-role"><b>${escapeHtml(a.positionTitle)}</b> · ${escapeHtml(a.employer)}</p>
+          <span class="packet-tag">How heard: ${escapeHtml(truncate(a.howHeard, 70))}</span>
+        </div>
+        <div class="packet-meta">
+          <div class="packet-num">Applicant ${i+1} of ${APPLICANTS.length}</div><br>
+          ${a.email ? `${escapeHtml(a.email)}<br>` : ''}
+          ${a.phone ? `${escapeHtml(a.phone)}<br>` : ''}
+          ${a.resumeLink ? `<a href="${escapeAttr(a.resumeLink)}" target="_blank" rel="noopener">View résumé ↗</a>` : ''}
+        </div>
+      </div>
+      <div class="packet-body">
+        ${mainFields}
+        <div class="pfield" style="border-bottom:none; padding-bottom:0;">
+          <button class="collapsible-toggle" onclick="toggleOptional('${escapeAttr(a.name)}')" id="opt-toggle-${i}">
+            ${collapsedOptional[a.name]===false ? '▾ Hide optional detail & references' : '▸ Show optional detail & references'}
+          </button>
+          <div id="opt-fields-${i}" style="display:${collapsedOptional[a.name]===false ? 'block':'none'}; margin-top:4px;">
+            ${extraFields}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"><span class="sd-label">Rubric</span><span class="sd-line"></span></div>
+    <p class="section-hint">Score each criterion 1–5 using the evidence above. Weight shown reflects each criterion's share of the overall recommendation.</p>
+    <div class="rubric-card">${rubricHtml}</div>
+
+    <div class="section-divider"><span class="sd-label">Notes &amp; recommendation</span><span class="sd-line"></span></div>
+    <div class="rubric-card" style="padding:22px 26px;">
+      <div class="field-block">
+        <label class="field-label" for="comments-${i}">Evidence or notes supporting your scores <span class="field-optional">(optional)</span></label>
+        <textarea id="comments-${i}" placeholder="Cite specific evidence from the application…" oninput="setText('${escapeAttr(a.name)}','comments', this.value)">${escapeHtml(r.comments||'')}</textarea>
+      </div>
+      <div class="field-block">
+        <label class="field-label" for="followup-${i}">Follow-up questions or concerns <span class="field-optional">(optional)</span></label>
+        <textarea id="followup-${i}" placeholder="Anything to raise with the committee or ask the applicant directly…" oninput="setText('${escapeAttr(a.name)}','followup', this.value)">${escapeHtml(r.followup||'')}</textarea>
+      </div>
+      <div class="field-block" style="margin-bottom:0;">
+        <label class="field-label">Final recommendation</label>
+        <div class="rec-row">${recHtml}</div>
+      </div>
+    </div>
+
+    <div class="nav-bar">
+      <button class="nav-btn" id="prev-btn" onclick="goTo(${i-1})" ${i===0?'disabled':''}>← Previous</button>
+      <span class="save-pill"><span class="dot"></span><span id="save-pill-text">Saved automatically</span></span>
+      <button class="nav-btn primary" id="next-btn" onclick="goTo(${i+1})">${i===APPLICANTS.length-1 ? 'Finish review →' : 'Next applicant →'}</button>
+    </div>
+  `;
+}
+
+function toggleOptional(name){
+  collapsedOptional[name] = collapsedOptional[name]===false ? true : false;
+  renderApplicant(currentIndex);
+}
+
+/* ============== Render: Summary screen ============== */
+function recPillClass(rec){
+  if(rec==='Admit') return 'admit';
+  if(rec==='Waitlist') return 'waitlist';
+  if(rec==='Discuss') return 'discuss';
+  if(rec==='Do not admit') return 'notadmit';
+  return 'pending';
+}
+
+function computeWeighted(r){
+  let sum = 0, wsum = 0;
+  RUBRIC.forEach((crit, ci)=>{
+    const key = RUBRIC_KEYS[ci];
+    const v = r.scores ? Number(r.scores[key]) : 0;
+    if(v){ sum += v*crit.weight; wsum += crit.weight; }
+  });
+  if(wsum === 0) return null;
+  return (sum/wsum).toFixed(2);
+}
+
+function renderSummary(){
+  document.getElementById('mb-title').textContent = 'Summary';
+  const completeCount = APPLICANTS.filter(a=>isReviewed(a.name)===2).length;
+  const rows = APPLICANTS.map((a,i)=>{
+    const r = getResp(a.name);
+    const w = computeWeighted(r);
+    return `<tr>
+      <td class="name">${escapeHtml(a.name)}</td>
+      <td title="${escapeAttr(a.employer)}">${escapeHtml(a.employer)}</td>
+      <td>${w ?? '—'}</td>
+      <td><span class="pill-rec ${recPillClass(r.finalRec)}">${r.finalRec || 'Pending'}</span></td>
+      <td><button class="nav-btn" style="padding:5px 10px; font-size:12px;" onclick="goTo(${i})">Open →</button></td>
+    </tr>`;
+  }).join('');
+
+  const el = document.getElementById('main-inner');
+  el.innerHTML = `
+    <div class="hero-card">
+      <p class="hero-eyebrow">Review complete</p>
+      <h2 class="hero-title">Nice work.</h2>
+      <p class="hero-text">You've completed <b>${completeCount} of ${APPLICANTS.length}</b> applicant evaluations. Review the summary below, jump back into any applicant to make changes, or export your scores for the selection committee.</p>
+      <button class="hero-cta" onclick="exportCSV()">⬇ Export scores (CSV)</button>
+    </div>
+    <div class="section-divider"><span class="sd-label">All applicants</span><span class="sd-line"></span></div>
+    <div class="rubric-card" style="padding:8px 10px;">
+      <div class="summary-table-wrap">
+        <table class="summary">
+          <thead><tr><th>Applicant</th><th>Organization</th><th>Weighted score</th><th>Final rec.</th><th></th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>
+    <div class="nav-bar" style="justify-content:flex-start;">
+      <button class="nav-btn" onclick="goTo(${APPLICANTS.length-1})">← Back to last applicant</button>
+    </div>
+  `;
+}
+
+/* ============== Navigation ============== */
+function goTo(i){
+  if(i < -1) i = -1;
+  if(i > APPLICANTS.length) i = APPLICANTS.length;
+  currentIndex = i;
+  if(i === -1) renderWelcome();
+  else if(i === APPLICANTS.length) renderSummary();
+  else renderApplicant(i);
+  renderSidebar();
+  document.getElementById('main').scrollTo(0,0);
+  closeSidebar();
+}
+
+/* ============== Field setters ============== */
+function setScore(name, key, val){
+  const r = getResp(name);
+  r.scores[key] = val;
+  scheduleSave(name);
+  renderSidebar();
+}
+function setText(name, field, val){
+  const r = getResp(name);
+  r[field] = val;
+  scheduleSave(name);
+}
+function setFinalRec(name, val){
+  const r = getResp(name);
+  r.finalRec = val;
+  scheduleSave(name);
+  renderSidebar();
+}
+
+document.getElementById('ev-name').addEventListener('input', e=>{
+  evaluatorInfo.name = e.target.value;
+  scheduleSave(null);
+});
+document.getElementById('ev-email').addEventListener('input', e=>{
+  evaluatorInfo.email = e.target.value;
+  scheduleSave(null);
+});
+
+/* ============== Export ============== */
+function csvEscape(v){
+  if(v === undefined || v === null) v = '';
+  v = String(v).replace(/"/g,'""');
+  return `"${v}"`;
+}
+
+function exportCSV(){
+  const headers = ['Evaluator','Evaluator Email','Applicant','Organization',
+    ...RUBRIC.map(c=>c.criterion),
+    'Weighted Score','Final Recommendation','Evidence / Notes','Follow-up'];
+  const rows = [headers];
+  APPLICANTS.forEach(a=>{
+    const r = getResp(a.name);
+    const w = computeWeighted(r);
+    rows.push([
+      evaluatorInfo.name||'', evaluatorInfo.email||'', a.name, a.employer,
+      ...RUBRIC_KEYS.map(k=>r.scores[k]||''),
+      w ?? '', r.finalRec||'', r.comments||'', r.followup||''
+    ]);
+  });
+  const csv = rows.map(row=>row.map(csvEscape).join(',')).join('\r\n');
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  const safeName = (evaluatorInfo.name||'evaluator').replace(/[^a-z0-9]+/gi,'_');
+  link.href = url;
+  link.download = `NoCo_Changemakers_2026-27_Evaluations_${safeName}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  setTimeout(()=>URL.revokeObjectURL(url), 2000);
+  showToast('CSV exported. Send this file to the selection committee.');
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3200);
+}
+
+/* ============== Reset ============== */
+async function confirmReset(){
+  if(!confirm('Clear all of your saved scores and notes for every applicant? This cannot be undone.')) return;
+  for(const a of APPLICANTS){
+    responses[a.name] = {scores:{}, comments:'', followup:'', finalRec:''};
+    await storageDelete(`${STORAGE_PREFIX}:resp:${a.name}`);
+  }
+  showToast('All responses cleared.');
+  goTo(-1);
+}
+
+/* ============== Mobile sidebar ============== */
+function openSidebar(){
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('scrim').classList.add('show');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('scrim').classList.remove('show');
+}
+
+/* ============== Utils ============== */
+function escapeHtml(s){
+  if(s===undefined||s===null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function escapeAttr(s){
+  return escapeHtml(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function truncate(s, n){
+  if(!s) return '';
+  return s.length > n ? s.slice(0,n-1)+'…' : s;
+}
+
+/* ============== Init ============== */
+(async function init(){
+  await loadAll();
+  goTo(-1);
+})();
+
+</script>
+
+</body>
+</html>
